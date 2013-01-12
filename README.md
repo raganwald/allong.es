@@ -1,2 +1,1 @@
-allong-es.github.com
-====================
+You really should be looking at the [oscin.es home page](http://oscin.es). Or the [source code](https://github.com/oscin-es/oscin-es.github.com/blob/master/lib/oscin.es.js).
