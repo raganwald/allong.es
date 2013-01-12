@@ -1,6 +1,6 @@
 {
   "author": "Reg Braithwaite <raganwald@gmail.com> (http://braythwayt.com)",
-  "name": "allong.es",
+  "name": "allong-es",
   "description": "Combinators and Function Decorators",
   "version": "0.0.1",
   "homepage": "http://allong.es",
@@ -8,7 +8,7 @@
     "type": "git",
     "url": "git://github.com/allong-es/allong-es.github.com.git"
   },
-  "main": "lib/allong.es.js",
+  "main": "lib/allong-es.js",
   "scripts": {
     "test": "jasmine-node --coffee --verbose spec"
   },
