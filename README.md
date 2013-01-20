@@ -78,6 +78,14 @@ bound(fn, args...)(obj)
   //=> fn.bind(obj, args...)
 ```
 
+### properties
+```
+array.map(get('property'))
+  //=> array.map(function (element) {
+  //               return element['property']
+  //             })
+```
+
 ### composition
 
 ```javascript
@@ -105,6 +113,8 @@ squareAll([1, 2, 3, 4])
 
 ### decorators
 
+Maybe:
+
 ```javascript
 var safeFirst = maybe(function (arr) { return arr[0] })
 
@@ -114,8 +124,39 @@ safeFirst(null)
   //=> null
 ```
 
+Tap:
+
 ```javascript
 tap([1, 2, 3, 4, 5], send('pop'))
   //=> [1, 2, 3, 4]
 ```
 
+Fluent:
+
+```javascript
+Role = function () {}
+
+Role.prototype.set = fluent( function (property, name) { 
+  this[property] = name 
+})
+
+var doomed = new Attrs()
+  .set('name', "Fredo")
+  .set('relationship', 'brother')
+  .set('parts', ['I', 'II'])
+```
+
+Once:
+
+```javascript
+var message = once( function () { console.log("Hello, it's me") })
+
+message()
+  //=> "Hello, it's me"
+message()
+  //=>
+message()
+  //=>
+message()
+  //=>
+```
