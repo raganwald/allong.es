@@ -65,10 +65,10 @@ inventories.forEach(send('addApples', 12))
 ```javascript
 curry( function (x, y) { return x } )
   //=> function (x) {
-         return function (y) {
-           return x
-         }
-       }
+  //     return function (y) {
+  //       return x
+  //     }
+  //   }
 ```
 
 ### binding
@@ -83,15 +83,15 @@ bound(fn, args...)(obj)
 ```javascript
 compose(a, b, c)
   //=> function (x) {
-         return a(b(c(x)))
-       }
+  //     return a(b(c(x)))
+  //   }
 ```
 
 ```javascript
 sequence(a, b, c)
   //=> function (x) {
-         return c(b(a(x)))
-       }
+  //     return c(b(a(x)))
+  //   }
 ```
 
 ### mapping
@@ -101,5 +101,21 @@ var squareAll = splat(function (x) { return x * x })
 
 squareAll([1, 2, 3, 4])
   //=> [1, 4, 9, 16]
+```
+
+### decorators
+
+```javascript
+var safeFirst = maybe(function (arr) { return arr[0] })
+
+safeFirst([1, 2, 3])
+  //=> 1
+safeFirst(null)
+  //=> null
+```
+
+```javascript
+tap([1, 2, 3, 4, 5], send('pop'))
+  //=> [1, 2, 3, 4]
 ```
 
