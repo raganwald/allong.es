@@ -2,7 +2,7 @@ You really should be looking at the [allong.es home page](http://allong.es). Or 
 
 ### variadic
 
-Makes a function into a variadic (accepts any number of arguments). The last named parameter will be given an array of argument, e.g.
+Makes a function into a variadic (accepts any number of arguments). The last named parameter will be given an array of arguments.
 
 ```javascript
 var fn = variadic(function (a) { return a })
@@ -23,6 +23,8 @@ fn(1,2,3)
 ```
 
 ### partial application
+
+The basics. Note: applyFirst is faster than applyLeft, use it if you are only applying a single argument. Likewise, applyLast is faster than applyRight.
 
 ```javascript
 var base = function (greeting, you, me) { return greeting + ', ' + you + ', my name is ' + me }
@@ -47,4 +49,57 @@ anthonyCarla('Yo')
   //=> "Yo, Anthony, my name is Carla"
 ```
 
+Partial application is also useful for methods:
+
+```javascript
+// sends a message
+inventories.map(send('apples')) 
+  //=> [ 0, 240, 24 ]
+
+// sends a message and partially applies an argument
+inventories.forEach(send('addApples', 12))
+```
+
+### currying
+
+```javascript
+curry( function (x, y) { return x } )
+  //=> function (x) {
+         return function (y) {
+           return x
+         }
+       }
+```
+
+### binding
+
+```javascript
+bound(fn, args...)(obj)
+  //=> fn.bind(obj, args...)
+```
+
+### composition
+
+```javascript
+compose(a, b, c)
+  //=> function (x) {
+         return a(b(c(x)))
+       }
+```
+
+```javascript
+sequence(a, b, c)
+  //=> function (x) {
+         return c(b(a(x)))
+       }
+```
+
+### mapping
+
+```javascript
+var squareAll = splat(function (x) { return x * x })
+
+squareAll([1, 2, 3, 4])
+  //=> [1, 4, 9, 16]
+```
 
