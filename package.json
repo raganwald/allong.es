@@ -2,7 +2,7 @@
   "author": "Reg Braithwaite <raganwald@gmail.com> (http://braythwayt.com)",
   "name": "allong.es",
   "description": "Combinators and Function Decorators",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "homepage": "http://allong.es",
   "repository": {
     "type": "git",
