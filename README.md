@@ -111,7 +111,7 @@ squareAll([1, 2, 3, 4])
   //=> [1, 4, 9, 16]
 ```
 
-### decorators
+### function/method decorators
 
 Maybe:
 
@@ -160,3 +160,41 @@ message()
 message()
   //=>
 ```
+
+### class decorator
+
+```javascript
+function Todo (name) {
+  var self = this instanceof Todo
+             ? this
+             : new Todo();
+  self.name = name || 'Untitled';
+  self.done = false;
+};
+
+Todo.prototype.do = fluent( function () {
+  this.done = true;
+});
+
+Todo.prototype.undo = fluent( function () {
+  this.done = false;
+});
+
+var AndColourCoded = ClassDecorator({
+  setColourRGB: fluent( function (r, g, b) {
+    this.colourCode = { r: r, g: g, b: b };
+  }),
+  getColourRGB: function () {
+    return this.colourCode;
+  }
+});
+
+var ColourTodo = AndColourCoded(Todo);
+
+new ColourTodo('Use More Decorators').setColourRGB(0, 255, 0);
+  //=> { name: 'Use More Decorators',
+  //     done: false,
+  //     colourCode: { r: 0, g: 255, b: 0 } }
+```
+
+Note: `ClassDecorator` works with JavaScript constructors that have a default implementation (they work properly with no arguments), and are new-agnostic (they can be called with new or as a normal function). `Todo` above has both properties.
