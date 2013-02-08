@@ -223,9 +223,13 @@ var AddLocation = mixin({
       getLocation: function () { return this.location; }
     });
 
-AddLocation(Todo);
+AddLocation.call(Todo.prototype);
+// Or use AddLocation(Todo.prototype)
 
-var todo = new Todo("Vacuum").setLocation('Home');
+new Todo("Vacuum").setLocation('Home');
+  //=> { name: 'Vacuum',
+  //     done: false,
+  //     location: 'Home' }
 
 var AndColourCoded = classDecorator({
   setColourRGB: fluent( function (r, g, b) {

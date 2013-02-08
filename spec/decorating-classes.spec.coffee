@@ -44,9 +44,29 @@ describe "mixin", ->
   LocationAware = mixin
     setLocation: (@location) -> this
     getLocation: -> @location
+    
+  describe "Using context", ->
 
-  LocationAware(Todo)
-
-  it "should add location to the existing class", ->
-    expect( typeof Todo.prototype.setLocation ).toEqual 'function'
-    expect( typeof Todo.prototype.getLocation ).toEqual 'function'
+    it "should add location to the existing class's prototype", ->
+      LocationAware.call(Todo.prototype)
+      expect( typeof Todo.prototype.setLocation ).toEqual 'function'
+      expect( typeof Todo.prototype.getLocation ).toEqual 'function'
+      
+  describe "Using a parameter", ->
+    
+    a = { a: 'a' }
+    b = { b: 'b' }
+    c = { c: 'b' }
+    
+    it "should not add the location to the context", ->
+      LocationAware.call(a, b)
+      expect( a.setLocation ).toBeUndefined()
+      expect( a.getLocation ).toBeUndefined()
+      expect( typeof b.setLocation ).toEqual 'function'
+      expect( typeof b.getLocation ).toEqual 'function'
+      
+    it "should add the location when called normally", ->
+      LocationAware(c)
+      expect( typeof c.setLocation ).toEqual 'function'
+      expect( typeof c.getLocation ).toEqual 'function'
+    
