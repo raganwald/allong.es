@@ -22,7 +22,7 @@ fn(1,2,3)
   //=> { a: 1, b: [2, 3] }
 ```
 
-### partial application
+### partial application: applyFirst, applyLast, applyLeft, and applyRight
 
 The basics. Note: applyFirst is faster than applyLeft, use it if you are only applying a single argument. Likewise, applyLast is faster than applyRight.
 
@@ -60,7 +60,7 @@ inventories.map(send('apples'))
 inventories.forEach(send('addApples', 12))
 ```
 
-### currying
+### curry
 
 ```javascript
 curry( function (x, y) { return x } )
@@ -71,14 +71,14 @@ curry( function (x, y) { return x } )
   //   }
 ```
 
-### binding
+### bound
 
 ```javascript
 bound(fn, args...)(obj)
   //=> fn.bind(obj, args...)
 ```
 
-### properties
+### properties: get
 ```
 array.map(get('property'))
   //=> array.map(function (element) {
@@ -86,7 +86,7 @@ array.map(get('property'))
   //             })
 ```
 
-### composition
+### compose and sequence
 
 ```javascript
 compose(a, b, c)
@@ -102,16 +102,21 @@ sequence(a, b, c)
   //   }
 ```
 
-### mapping
+### splat and soak
 
 ```javascript
-var squareAll = splat(function (x) { return x * x })
+var squareList = splat(function (x) { return x * x })
 
-squareAll([1, 2, 3, 4])
+squareList([1, 2, 3, 4])
   //=> [1, 4, 9, 16]
+  
+var squareTree = soak(function (x) { return x * x })
+
+squareTree([1, 2, [3, 4]])
+  //=> [1, 4, [9, 16]]
 ```
 
-### function/method decorators
+### function/method decorators: maybe, tap, fluent, and once
 
 Maybe:
 
@@ -161,7 +166,7 @@ message()
   //=>
 ```
 
-### class decorator
+### class decoration: classDecorator
 
 ```javascript
 function Todo (name) {
@@ -180,7 +185,7 @@ Todo.prototype.undo = fluent( function () {
   this.done = false;
 });
 
-var AndColourCoded = ClassDecorator({
+var AndColourCoded = classDecorator({
   setColourRGB: fluent( function (r, g, b) {
     this.colourCode = { r: r, g: g, b: b };
   }),
@@ -197,4 +202,4 @@ new ColourTodo('Use More Decorators').setColourRGB(0, 255, 0);
   //     colourCode: { r: 0, g: 255, b: 0 } }
 ```
 
-Note: `ClassDecorator` works with JavaScript constructors that have a default implementation (they work properly with no arguments), and are new-agnostic (they can be called with new or as a normal function). `Todo` above has both properties.
+Note: `classDecorator` works with JavaScript constructors that have a default implementation (they work properly with no arguments), and are new-agnostic (they can be called with new or as a normal function). `Todo` above has both properties.

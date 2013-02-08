@@ -1,4 +1,4 @@
-{ClassDecorator, fluent} = require '../lib/allong.es.js'
+{classDecorator, fluent} = require '../lib/allong.es.js'
 
 class Todo
   constructor: (name) ->
@@ -11,13 +11,13 @@ class Todo
   do: fluent -> this.done = true
   undo: fluent -> this.done = false
 
-AndColourCoded = ClassDecorator
+AndColourCoded = classDecorator
   setColourRGB: fluent (r, g, b) -> this.colourCode = { r, g, b }
   getColourRGB: -> this.colourCode
 
 ColourTodo = AndColourCoded Todo
 
-describe "ClassDecorator", ->
+describe "classDecorator", ->
 
   todo = new ColourTodo('Use More Decorators')
         .setColourRGB(0, 255, 0)
