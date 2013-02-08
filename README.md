@@ -5,6 +5,8 @@ You really should be looking at the [allong.es home page](http://allong.es). Or 
 Makes a function into a variadic (accepts any number of arguments). The last named parameter will be given an array of arguments.
 
 ```javascript
+var variadic = require('allong.es').variadic;
+
 var fn = variadic(function (a) { return a })
 
 fn()
@@ -27,6 +29,11 @@ fn(1,2,3)
 The basics. Note: applyFirst is faster than applyLeft, use it if you are only applying a single argument. Likewise, applyLast is faster than applyRight.
 
 ```javascript
+var applyFirst = require('allong.es').applyFirst,
+    applyLast = require('allong.es').applyLast,
+    applyLeft = require('allong.es').applyLeft,
+    applyRight = require('allong.es').applyRight;
+
 var base = function (greeting, you, me) { return greeting + ', ' + you + ', my name is ' + me }
 var hello = applyFirst(base, 'Hello')
 
@@ -52,6 +59,8 @@ anthonyCarla('Yo')
 Partial application is also useful for methods:
 
 ```javascript
+var send = require('allong.es').send;
+    
 // sends a message
 inventories.map(send('apples')) 
   //=> [ 0, 240, 24 ]
@@ -63,6 +72,8 @@ inventories.forEach(send('addApples', 12))
 ### curry
 
 ```javascript
+var curry = require('allong.es').curry;
+    
 curry( function (x, y) { return x } )
   //=> function (x) {
   //     return function (y) {
@@ -74,12 +85,17 @@ curry( function (x, y) { return x } )
 ### bound
 
 ```javascript
+var bound = require('allong.es').bound;
+    
 bound(fn, args...)(obj)
   //=> fn.bind(obj, args...)
 ```
 
 ### properties: get
-```
+
+```javascript
+var get = require('allong.es').get;
+    
 array.map(get('property'))
   //=> array.map(function (element) {
   //               return element['property']
@@ -89,13 +105,14 @@ array.map(get('property'))
 ### compose and sequence
 
 ```javascript
+var compose = require('allong.es').compose,
+    sequence = require('allong.es').sequence;
+    
 compose(a, b, c)
   //=> function (x) {
   //     return a(b(c(x)))
   //   }
-```
-
-```javascript
+ 
 sequence(a, b, c)
   //=> function (x) {
   //     return c(b(a(x)))
@@ -105,6 +122,9 @@ sequence(a, b, c)
 ### splat and soak
 
 ```javascript
+var splat = require('allong.es').splat,
+    soak = require('allong.es').soak;
+    
 var squareList = splat(function (x) { return x * x })
 
 squareList([1, 2, 3, 4])
@@ -121,6 +141,8 @@ squareTree([1, 2, [3, 4]])
 Maybe:
 
 ```javascript
+var maybe = require('allong.es').maybe;
+    
 var safeFirst = maybe(function (arr) { return arr[0] })
 
 safeFirst([1, 2, 3])
@@ -132,6 +154,8 @@ safeFirst(null)
 Tap:
 
 ```javascript
+var tap = require('allong.es').tap;
+    
 tap([1, 2, 3, 4, 5], send('pop'))
   //=> [1, 2, 3, 4]
 ```
@@ -139,6 +163,8 @@ tap([1, 2, 3, 4, 5], send('pop'))
 Fluent:
 
 ```javascript
+var fluent = require('allong.es').fluent;
+    
 Role = function () {}
 
 Role.prototype.set = fluent( function (property, name) { 
@@ -154,6 +180,8 @@ var doomed = new Attrs()
 Once:
 
 ```javascript
+var once = require('allong.es').once;
+    
 var message = once( function () { console.log("Hello, it's me") })
 
 message()
@@ -166,9 +194,12 @@ message()
   //=>
 ```
 
-### class decoration: classDecorator
+### class decoration: mixin and classDecorator
 
 ```javascript
+var mixin = require('allong.es').mixin,
+    classDecorator = require('allong.es').classDecorator;
+    
 function Todo (name) {
   var self = this instanceof Todo
              ? this
@@ -184,6 +215,17 @@ Todo.prototype.do = fluent( function () {
 Todo.prototype.undo = fluent( function () {
   this.done = false;
 });
+
+var AddLocation = mixin({
+      setLocation: fluent( function (location) {
+        this.location = location;
+      }),
+      getLocation: function () { return this.location; }
+    });
+
+AddLocation(Todo);
+
+var todo = new Todo("Vacuum").setLocation('Home');
 
 var AndColourCoded = classDecorator({
   setColourRGB: fluent( function (r, g, b) {
