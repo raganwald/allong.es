@@ -1,0 +1,1 @@
+{iterators: {accumulate, fold, LinkedListIterator, FlatArrayIterator, RecursiveArrayIterator}} = require '../lib/allong.es.js'
