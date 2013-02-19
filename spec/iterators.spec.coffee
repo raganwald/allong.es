@@ -1,4 +1,4 @@
-{iterators: {statefulMap, fold, FlatArrayIterator, RecursiveArrayIterator}} = require '../lib/allong.es.js'
+{iterators: {statefulMap, fold, map, filter, slice, FlatArrayIterator, RecursiveArrayIterator}} = require '../lib/allong.es.js'
 
 describe "FlatArrayIterator", ->
   
@@ -79,4 +79,46 @@ describe "fold", ->
       
       it "should fold an array with no elements", ->
         expect( fold(RecursiveArrayIterator([[[], []]]), sum) ).toBeUndefined()
+
+describe "statefulMap", ->
+  
+    describe "with a seed", ->
+  
+      it "should map an iterator with many elements", ->
+        i = statefulMap(RecursiveArrayIterator([1, [2, 3, [4]], 5]), sum, 0)
+        expect( i() ).toEqual(1)
+        expect( i() ).toEqual(3)
+        expect( i() ).toEqual(6)
+        expect( i() ).toEqual(10)
+        expect( i() ).toEqual(15)
+        expect( i() ).toBeUndefined()
+  
+      it "should map an iterator with one element", ->
+        i = statefulMap(RecursiveArrayIterator([[[4], []]]), sum, 42)
+        expect( i() ).toEqual(46)
+        expect( i() ).toBeUndefined()
+  
+      it "should map an empty iterator", ->
+        i = statefulMap(RecursiveArrayIterator([[[], []]]), sum, 42)
+        expect( i() ).toBeUndefined()
+      
+    describe "without a seed", ->
+  
+      it "should map an iterator with many elements", ->
+        i = statefulMap(RecursiveArrayIterator([1, [2, 3, [4]], 5]), sum)
+        expect( i() ).toEqual(1)
+        expect( i() ).toEqual(3)
+        expect( i() ).toEqual(6)
+        expect( i() ).toEqual(10)
+        expect( i() ).toEqual(15)
+        expect( i() ).toBeUndefined()
+  
+      it "should map an iterator with one element", ->
+        i = statefulMap(RecursiveArrayIterator([[[4], []]]), sum)
+        expect( i() ).toEqual(4)
+        expect( i() ).toBeUndefined()
+  
+      it "should map an empty iterator", ->
+        i = statefulMap(RecursiveArrayIterator([[[], []]]), sum)
+        expect( i() ).toBeUndefined()
     
