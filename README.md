@@ -24,6 +24,28 @@ fn(1,2,3)
   //=> { a: 1, b: [2, 3] }
 ```
 
+### unary, binary, and ternary
+
+Sometimes, you have a function that takes multiple arguments, but you only want it to accept one, or two, or maybe three arguments and ignore the rest. For example, `parseInt` takes a radix as an optional second parameter. And that is havoc if you try to use it with `Array.map`:
+
+```javascript
+['1', '2', '3', '4', '5'].map(parseInt)
+  //=> [ 1,
+  //     NaN,
+  //     NaN,
+  //     NaN,
+  //     NaN ]
+```
+
+Use `unary(parseInt)` to solve the problem:
+
+```javascript
+['1', '2', '3', '4', '5'].map(unary(parseInt))
+  //=> [ 1, 2, 3, 4, 5 ]
+```
+
+`binary` has similar uses when working with `Array.reduce` and its habit of passing three parameters to your supplied function.
+
 ### partial application: applyFirst, applyLast, applyLeft, and applyRight
 
 The basics. Note: applyFirst is faster than applyLeft, use it if you are only applying a single argument. Likewise, applyLast is faster than applyRight.
