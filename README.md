@@ -1,4 +1,4 @@
-You really should be looking at the [allong.es home page](http://allong.es). Or the [source code](https://github.com/allong-es/allong-es.github.com/blob/master/lib/allong.es.js). But here's a cheat sheet:
+You really should be looking at the [allong.es home page](http://allong.es). Or the [source code](https://github.com/raganwald/allong.es/blob/master/lib/allong.es.js). But here's a cheat sheet:
 
 ### variadic
 

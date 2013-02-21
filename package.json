@@ -6,7 +6,7 @@
   "homepage": "http://allong.es",
   "repository": {
     "type": "git",
-    "url": "git://github.com/allong-es/allong-es.github.com.git"
+    "url": "git://github.com/raganwald/allong.es.git"
   },
   "main": "lib/allong.es.js",
   "scripts": {
