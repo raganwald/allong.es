@@ -246,3 +246,34 @@ describe "slice", ->
     it "should return an empty iterator when out of range", ->
       i = slice(FlatArrayIterator([1, 2, 3, 4, 5]), 5, 1)
       expect( i() ).toBeUndefined()
+      
+describe "drop", ->
+  
+  it "should drop the number of items dropped", ->
+    i = drop(FlatArrayIterator([1, 2, 3, 4, 5]), 2)
+    expect( i() ).toEqual 3
+    expect( i() ).toEqual 4
+    expect( i() ).toEqual 5
+    expect( i() ).toBeUndefined()
+  
+  it "should handle overdropping", ->
+    i = drop(FlatArrayIterator([1, 2, 3, 4, 5]), 99)
+    expect( i() ).toBeUndefined()
+    
+  it "should handle underdropping", ->
+    i = drop(FlatArrayIterator([1, 2, 3, 4, 5]), 0)
+    expect( i() ).toEqual 1
+    expect( i() ).toEqual 2
+    expect( i() ).toEqual 3
+    expect( i() ).toEqual 4
+    expect( i() ).toEqual 5
+    expect( i() ).toBeUndefined()
+    
+  it "should default to one", ->
+    i = drop(FlatArrayIterator([1, 2, 3, 4, 5]))
+    expect( i() ).toEqual 2
+    expect( i() ).toEqual 3
+    expect( i() ).toEqual 4
+    expect( i() ).toEqual 5
+    expect( i() ).toBeUndefined()
+    
