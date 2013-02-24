@@ -1,4 +1,4 @@
-{iterators: {slice, drop, take, statefulMap, fold, map, filter, FlatArrayIterator, RecursiveArrayIterator}} = require '../lib/allong.es.js'
+{iterators: {slice, drop, take, accumulate, statefulMap, fold, map, filter, FlatArrayIterator, RecursiveArrayIterator}} = require '../lib/allong.es.js'
 
 describe "FlatArrayIterator", ->
   
@@ -80,12 +80,12 @@ describe "fold", ->
       it "should fold an array with no elements", ->
         expect( fold(RecursiveArrayIterator([[[], []]]), sum) ).toBeUndefined()
 
-describe "statefulMap", ->
+describe "accumulate", ->
   
     describe "with a seed", ->
   
       it "should map an iterator with many elements", ->
-        i = statefulMap(RecursiveArrayIterator([1, [2, 3, [4]], 5]), sum, 0)
+        i = accumulate(RecursiveArrayIterator([1, [2, 3, [4]], 5]), sum, 0)
         expect( i() ).toEqual(1)
         expect( i() ).toEqual(3)
         expect( i() ).toEqual(6)
@@ -94,18 +94,18 @@ describe "statefulMap", ->
         expect( i() ).toBeUndefined()
   
       it "should map an iterator with one element", ->
-        i = statefulMap(RecursiveArrayIterator([[[4], []]]), sum, 42)
+        i = accumulate(RecursiveArrayIterator([[[4], []]]), sum, 42)
         expect( i() ).toEqual(46)
         expect( i() ).toBeUndefined()
   
       it "should map an empty iterator", ->
-        i = statefulMap(RecursiveArrayIterator([[[], []]]), sum, 42)
+        i = accumulate(RecursiveArrayIterator([[[], []]]), sum, 42)
         expect( i() ).toBeUndefined()
       
     describe "without a seed", ->
   
       it "should map an iterator with many elements", ->
-        i = statefulMap(RecursiveArrayIterator([1, [2, 3, [4]], 5]), sum)
+        i = accumulate(RecursiveArrayIterator([1, [2, 3, [4]], 5]), sum)
         expect( i() ).toEqual(1)
         expect( i() ).toEqual(3)
         expect( i() ).toEqual(6)
@@ -114,12 +114,12 @@ describe "statefulMap", ->
         expect( i() ).toBeUndefined()
   
       it "should map an iterator with one element", ->
-        i = statefulMap(RecursiveArrayIterator([[[4], []]]), sum)
+        i = accumulate(RecursiveArrayIterator([[[4], []]]), sum)
         expect( i() ).toEqual(4)
         expect( i() ).toBeUndefined()
   
       it "should map an empty iterator", ->
-        i = statefulMap(RecursiveArrayIterator([[[], []]]), sum)
+        i = accumulate(RecursiveArrayIterator([[[], []]]), sum)
         expect( i() ).toBeUndefined()
 
 square = (x) -> x*x
@@ -276,4 +276,17 @@ describe "drop", ->
     expect( i() ).toEqual 4
     expect( i() ).toEqual 5
     expect( i() ).toBeUndefined()
+    
+describe "statefulMap", ->
+  
+  it "should pass the state and result in a pair", ->
+    i = statefulMap(FlatArrayIterator([1, 2, 3, 4, 5]), (state, element) ->
+      [state + element, 'Total is ' + (state + element)]
+    , 0);
+    
+    expect( i() ).toEqual 'Total is 1'
+    expect( i() ).toEqual 'Total is 3'
+    expect( i() ).toEqual 'Total is 6'
+    expect( i() ).toEqual 'Total is 10'
+    expect( i() ).toEqual 'Total is 15'
     
