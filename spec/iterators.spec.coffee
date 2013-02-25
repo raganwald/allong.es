@@ -1,4 +1,4 @@
-{iterators: {slice, drop, take, accumulate, statefulMap, fold, map, filter, FlatArrayIterator, RecursiveArrayIterator}} = require '../lib/allong.es.js'
+{iterators: {slice, drop, take, accumulate, accumulateWithReturn, fold, map, filter, FlatArrayIterator, RecursiveArrayIterator}} = require '../lib/allong.es.js'
 
 describe "FlatArrayIterator", ->
   
@@ -277,10 +277,10 @@ describe "drop", ->
     expect( i() ).toEqual 5
     expect( i() ).toBeUndefined()
     
-describe "statefulMap", ->
+describe "accumulateWithReturn", ->
   
   it "should pass the state and result in a pair", ->
-    i = statefulMap(FlatArrayIterator([1, 2, 3, 4, 5]), (state, element) ->
+    i = accumulateWithReturn(FlatArrayIterator([1, 2, 3, 4, 5]), (state, element) ->
       [state + element, 'Total is ' + (state + element)]
     , 0);
     
