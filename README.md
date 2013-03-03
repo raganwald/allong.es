@@ -271,3 +271,84 @@ new ColourTodo('Use More Decorators').setColourRGB(0, 255, 0);
 ```
 
 Note: `classDecorator` works with JavaScript constructors that have a default implementation (they work properly with no arguments), and are new-agnostic (they can be called with new or as a normal function). `Todo` above has both properties.
+
+### functional iterators
+
+Functional iterators are stateful functions that "iterate over" the values in some ordered data set. You call the iterator repeatedly to obtain the values, and it will either never stop returning values (an infinite data set) or return `undefined` when there are no more values to return.
+
+Making functional iterators from arrays:
+
+```javascript
+var FlatArrayIterator = require('allong.es').FlatArrayIterator,
+    RecursiveArrayIterator = require('allong.es').RecursiveArrayIterator;
+    
+var i = FlatArrayIterator([1, 2, 3, 4, 5]);
+
+i();
+  #=> 1
+i();
+  #=> 2
+i();
+  #=> 3
+i();
+  #=> 4
+i();
+  #=> 5
+i();
+  #=> undefined
+    
+var i = FlatArrayIterator([1, [2, 3, 4], 5]);
+
+i();
+  #=> 1
+i();
+  #=> [2, 3, 4]
+i();
+  #=> 5
+i();
+  #=> undefined
+    
+var i = RecursiveArrayIterator([1, [2, 3, 4], 5]);
+
+i();
+  #=> 1
+i();
+  #=> 2
+i();
+  #=> 3
+i();
+  #=> 4
+i();
+  #=> 5
+i();
+  #=> undefined
+``` 
+
+Making functional iterators using generator functions:
+
+```javascript
+var unfold = require('allong.es').unfold,
+    unfoldWithReturn = require('allong.es').unfoldWithReturn;
+    
+var i = unfold(1, function (n) { return n + 1; });
+
+i();
+  //=> 1
+i();
+  //=> 2
+i();
+  //=> 3
+// ...
+    
+var i = unfoldWithReturn(1, function (n) { 
+  return [n + 1, n * n]; 
+});
+
+i();
+  //=> 1
+i();
+  //=> 4
+i();
+  //=> 9
+// ...
+```

@@ -1,4 +1,6 @@
-{iterators: {slice, drop, take, accumulate, accumulateWithReturn, fold, map, filter, FlatArrayIterator, RecursiveArrayIterator}} = require '../lib/allong.es.js'
+{iterators: {slice, drop, take, accumulate, accumulateWithReturn, 
+             fold, map, filter, FlatArrayIterator, RecursiveArrayIterator,
+             unfold, unfoldWithReturn}} = require '../lib/allong.es.js'
 
 describe "FlatArrayIterator", ->
   
@@ -290,3 +292,47 @@ describe "accumulateWithReturn", ->
     expect( i() ).toEqual 'Total is 10'
     expect( i() ).toEqual 'Total is 15'
     
+describe "unfold", ->
+  
+  it "should unfold and include the seed", ->
+    i = unfold 0, (n) -> n + 1
+    
+    expect( i() ).toEqual 0
+    expect( i() ).toEqual 1
+    expect( i() ).toEqual 2
+  
+  it "should not unfold without a seed", ->
+    i = unfold undefined, (n) -> n + 1
+    
+    expect( i() ).toEqual undefined
+    expect( i() ).toEqual undefined
+    expect( i() ).toEqual undefined
+    expect( i() ).toEqual undefined
+
+describe "unfoldWithReturn", ->
+  
+  it "should unfold and throw off a value", ->
+    i = unfoldWithReturn 1, (n) -> [n + 1, n*n]
+    
+    expect( i() ).toEqual 1
+    expect( i() ).toEqual 4
+    expect( i() ).toEqual 9
+    expect( i() ).toEqual 16
+  
+  it "should halt if it returns undefined", ->
+    i = unfoldWithReturn 1, (n) ->
+      [n + 1, if n is 1 then undefined else n * n]
+    
+    expect( i() ).toEqual undefined
+    expect( i() ).toEqual undefined
+    expect( i() ).toEqual undefined
+    expect( i() ).toEqual undefined
+  
+  it "should halt if the state becomes undefined", ->
+    i = unfoldWithReturn 1, (n) ->
+      [(if n is 3 then undefined else n + 1), (if n is undefined then 100 else n * n)]
+    
+    expect( i() ).toEqual 1
+    expect( i() ).toEqual 4
+    expect( i() ).toEqual 9
+    expect( i() ).toEqual undefined
