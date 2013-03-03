@@ -276,11 +276,17 @@ Note: `classDecorator` works with JavaScript constructors that have a default im
 
 Functional iterators are stateful functions that "iterate over" the values in some ordered data set. You call the iterator repeatedly to obtain the values, and it will either never stop returning values (an infinite data set) or return `undefined` when there are no more values to return.
 
+The functional iterators utilities are all namespaced:
+
+```javascript
+var FunctionalIterators = require('allong.es').iterators;
+```
+
 Making functional iterators from arrays:
 
 ```javascript
-var FlatArrayIterator = require('allong.es').FlatArrayIterator,
-    RecursiveArrayIterator = require('allong.es').RecursiveArrayIterator;
+var FlatArrayIterator = FunctionalIterators.FlatArrayIterator,
+    RecursiveArrayIterator = FunctionalIterators.RecursiveArrayIterator;
     
 var i = FlatArrayIterator([1, 2, 3, 4, 5]);
 
@@ -327,8 +333,8 @@ i();
 Making functional iterators using generator functions:
 
 ```javascript
-var unfold = require('allong.es').unfold,
-    unfoldWithReturn = require('allong.es').unfoldWithReturn;
+var unfold = FunctionalIterators.unfold,
+    unfoldWithReturn = FunctionalIterators.unfoldWithReturn;
     
 var i = unfold(1, function (n) { return n + 1; });
 
@@ -341,14 +347,105 @@ i();
 // ...
     
 var i = unfoldWithReturn(1, function (n) { 
-  return [n + 1, n * n]; 
+  return [n + 1, n + n]; 
 });
 
 i();
-  //=> 1
+  //=> 2
 i();
   //=> 4
 i();
+  //=> 6
+// ...
+```
+
+A richer example of `unfoldWithReturn`:
+
+```javaascript
+var cards = ['A', 2, 3, 4, 5, 6, 7, 8, 9, '10', 'J', 'Q', 'K'];
+
+function pickCard (deck) {
+  var position;
+  
+  if (deck.length === 0) {
+    return [[], void 0];
+  }
+  else {
+    position = Math.floor(Math.random() * deck.length);
+    return [
+      deck.slice(0, position).concat(deck.slice(position + 1)),
+      deck[position]
+    ];
+  }
+};
+
+var i = unfoldWithReturn(cards, pickCard);
+
+i();
+  //=> 5
+i();
+  //=> 4
+i();
+  //=> 2
+i();
+  //=> J
+  
+// ...
+```
+
+Mapping an iterator to another iterator:
+
+```javascript
+var map = FunctionalIterators.map;
+    
+var numbers = unfold(1, function (n) { return n + 1; }),
+    squares = map(numbers, function (n) { return n * n; });
+
+squares();
+  //=> 1
+squares();
+  //=> 4
+squares();
   //=> 9
+// ...
+```
+
+Accumulating an iterator to another iterator, a/k/a stateful mapping, with an optional seed:
+
+```javascript
+var accumulate = FunctionalIterators.accumulate;
+    
+var numbers = unfold(1, function (n) { return n + 1; }),
+    runningTotal = accumulate(numbers, function (accumulation, n) { 
+      return accumulation + n; 
+    });
+
+runningTotal();
+  //=> 1
+runningTotal();
+  //=> 3
+runningTotal();
+  //=> 6
+runningTotal();
+  //=> 10
+runningTotal();
+  //=> 15
+// ...
+
+var numbers = unfold(1, function (n) { return n + 1; }),
+    runningTotal = accumulate(numbers, function (accumulation, n) { 
+      return accumulation + n; 
+    }, 5);
+
+runningTotal();
+  //=> 6
+runningTotal();
+  //=> 8
+runningTotal();
+  //=> 11
+runningTotal();
+  //=> 15
+runningTotal();
+  //=> 20
 // ...
 ```
