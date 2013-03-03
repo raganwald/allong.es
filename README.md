@@ -285,43 +285,43 @@ var FlatArrayIterator = require('allong.es').FlatArrayIterator,
 var i = FlatArrayIterator([1, 2, 3, 4, 5]);
 
 i();
-  #=> 1
+  //=> 1
 i();
-  #=> 2
+  //=> 2
 i();
-  #=> 3
+  //=> 3
 i();
-  #=> 4
+  //=> 4
 i();
-  #=> 5
+  //=> 5
 i();
-  #=> undefined
+  //=> undefined
     
 var i = FlatArrayIterator([1, [2, 3, 4], 5]);
 
 i();
-  #=> 1
+  //=> 1
 i();
-  #=> [2, 3, 4]
+  //=> [2, 3, 4]
 i();
-  #=> 5
+  //=> 5
 i();
-  #=> undefined
+  //=> undefined
     
 var i = RecursiveArrayIterator([1, [2, 3, 4], 5]);
 
 i();
-  #=> 1
+  //=> 1
 i();
-  #=> 2
+  //=> 2
 i();
-  #=> 3
+  //=> 3
 i();
-  #=> 4
+  //=> 4
 i();
-  #=> 5
+  //=> 5
 i();
-  #=> undefined
+  //=> undefined
 ``` 
 
 Making functional iterators using generator functions:
