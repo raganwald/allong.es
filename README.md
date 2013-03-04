@@ -285,7 +285,7 @@ Functional iterators are stateful functions that "iterate over" the values in so
 The functional iterators utilities are all namespaced:
 
 ```javascript
-var FunctionalIterators = require('allong.es').iterators;
+var iterators = require('allong.es').iterators;
 ```
 
 ### FlatArrayIterator and RecursiveArrayIterator
@@ -293,8 +293,8 @@ var FunctionalIterators = require('allong.es').iterators;
 Making functional iterators from arrays:
 
 ```javascript
-var FlatArrayIterator = FunctionalIterators.FlatArrayIterator,
-    RecursiveArrayIterator = FunctionalIterators.RecursiveArrayIterator;
+var FlatArrayIterator = iterators.FlatArrayIterator,
+    RecursiveArrayIterator = iterators.RecursiveArrayIterator;
     
 var i = FlatArrayIterator([1, 2, 3, 4, 5]);
 
@@ -338,10 +338,11 @@ i();
   //=> undefined
 ```
 
-### range
+### range and numbers
 
 ```javascript
-var range = FunctionalIterators.range;
+var range = iterators.range,
+    numbers = iterators.numbers;
 
 var i = range(1, 5);
 
@@ -393,15 +394,37 @@ i();
 i();
   //=> 3
 // ...
+
+var i = numbers();
+
+i();
+  //=> 1
+i();
+  //=> 2
+i();
+  //=> 3
+// ...
+
+var i = numbers(0);
+
+i();
+  //=> 0
+i();
+  //=> 1
+i();
+  //=> 2
+i();
+  //=> 3
+// ...
 ```
 
 ### unfold and unfoldWithReturn
 
-Making functional iterators using generator functions:
+Unfold makes an iterator out of a seed by successively applying a function to the seed value. Here's an example duplicating the "numbers" feature:
 
 ```javascript
-var unfold = FunctionalIterators.unfold,
-    unfoldWithReturn = FunctionalIterators.unfoldWithReturn;
+var unfold = iterators.unfold,
+    unfoldWithReturn = iterators.unfoldWithReturn;
     
 var i = unfold(1, function (n) { return n + 1; });
 
@@ -465,10 +488,9 @@ i();
 Stateless mapping of an iterator to another iterator:
 
 ```javascript
-var map = FunctionalIterators.map;
+var map = iterators.map;
     
-var numbers = unfold(1, function (n) { return n + 1; }),
-    squares = map(numbers, function (n) { return n * n; });
+var squares = map(numbers, function (n) { return n * n; });
 
 squares();
   //=> 1
@@ -484,10 +506,9 @@ squares();
 Accumulating an iterator to another iterator, a/k/a stateful mapping, with an optional seed:
 
 ```javascript
-var accumulate = FunctionalIterators.accumulate;
+var accumulate = iterators.accumulate;
     
-var numbers = unfold(1, function (n) { return n + 1; }),
-    runningTotal = accumulate(numbers, function (accumulation, n) { 
+var runningTotal = accumulate(numbers, function (accumulation, n) { 
       return accumulation + n; 
     });
 
@@ -503,8 +524,7 @@ runningTotal();
   //=> 15
 // ...
 
-var numbers = unfold(1, function (n) { return n + 1; }),
-    runningTotal = accumulate(numbers, function (accumulation, n) { 
+var runningTotal = accumulate(numbers, function (accumulation, n) { 
       return accumulation + n; 
     }, 5);
 
@@ -526,7 +546,7 @@ runningTotal();
 This code transforms filters duplicates out of an iterator of numbers by turning them into "false." It consumes space proportional to the time it runs and the size of the set of possible numbers in its iterator.
 
 ```javascript
-var accumulateWithReturn = FunctionalIterators.accumulateWithReturn;
+var accumulateWithReturn = iterators.accumulateWithReturn;
     
 var randomNumbers = function () {
   return Math.floor(Math.random() * 10);
@@ -576,8 +596,8 @@ uniques();
 ### select and reject
 
 ```javascript
-var select = FunctionalIterators.select,
-    reject = FunctionalIterators.reject;
+var select = iterators.select,
+    reject = iterators.reject;
 
 function isEven (number) {
   return number === 0 || !isEven(number - 1);
@@ -617,7 +637,7 @@ Note: `select` and `reject` will enter an "infinite loop" if the iterator does n
 ### slice
 
 ```javascript
-var slice = FunctionalIterators.slice,
+var slice = iterators.slice,
     numbers = unfold(1, function (n) { return n + 1; });
 
 var i = slice(numbers, 3);
@@ -642,7 +662,7 @@ i();
 ### take
 
 ```javascript
-var take = FunctionalIterators.take,
+var take = iterators.take,
     numbers = unfold(1, function (n) { return n + 1; });
 
 var i = take(numbers);
@@ -675,7 +695,7 @@ i();
 ### drop
 
 ```javascript
-var drop = FunctionalIterators.drop,
+var drop = iterators.drop,
     numbers = unfold(1, function (n) { return n + 1; });
 
 drop(numbers);
