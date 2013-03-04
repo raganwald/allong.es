@@ -1,5 +1,7 @@
 You really should be looking at the [allong.es home page](http://allong.es). Or the [source code](https://github.com/raganwald/allong.es/blob/master/lib/allong.es.js). But here's a cheat sheet:
 
+## Arity Function Decorators
+
 ### variadic
 
 Makes a function into a variadic (accepts any number of arguments). The last named parameter will be given an array of arguments.
@@ -46,7 +48,7 @@ Use `unary(parseInt)` to solve the problem:
 
 `binary` has similar uses when working with `Array.reduce` and its habit of passing three parameters to your supplied function.
 
-### partial application: applyFirst, applyLast, applyLeft, and applyRight
+## Partial Application
 
 The basics. Note: applyFirst is faster than applyLeft, use it if you are only applying a single argument. Likewise, applyLast is faster than applyRight.
 
@@ -104,6 +106,8 @@ curry( function (x, y) { return x } )
   //   }
 ```
 
+## Miscellaneous Combinators
+
 ### bound
 
 ```javascript
@@ -113,7 +117,7 @@ bound(fn, args...)(obj)
   //=> fn.bind(obj, args...)
 ```
 
-### properties: get
+### get
 
 ```javascript
 var get = require('allong.es').get;
@@ -124,7 +128,7 @@ array.map(get('property'))
   //             })
 ```
 
-### compose and sequence
+## Functional Composition
 
 ```javascript
 var compose = require('allong.es').compose,
@@ -140,6 +144,8 @@ sequence(a, b, c)
   //     return c(b(a(x)))
   //   }
 ```
+
+## List Combinators
 
 ### splat and soak
 
@@ -158,9 +164,9 @@ squareTree([1, 2, [3, 4]])
   //=> [1, 4, [9, 16]]
 ```
 
-### function/method decorators: maybe, tap, fluent, and once
+## Function/Method Decorators
 
-Maybe:
+### maybe
 
 ```javascript
 var maybe = require('allong.es').maybe;
@@ -173,7 +179,7 @@ safeFirst(null)
   //=> null
 ```
 
-Tap:
+### tap
 
 ```javascript
 var tap = require('allong.es').tap;
@@ -182,7 +188,7 @@ tap([1, 2, 3, 4, 5], send('pop'))
   //=> [1, 2, 3, 4]
 ```
 
-Fluent:
+### fluent
 
 ```javascript
 var fluent = require('allong.es').fluent;
@@ -199,7 +205,7 @@ var doomed = new Attrs()
   .set('parts', ['I', 'II'])
 ```
 
-Once:
+### once
 
 ```javascript
 var once = require('allong.es').once;
@@ -216,7 +222,7 @@ message()
   //=>
 ```
 
-### class decoration: mixin and classDecorator
+## Decorating Classes/Constructors
 
 ```javascript
 var mixin = require('allong.es').mixin,
@@ -272,7 +278,7 @@ new ColourTodo('Use More Decorators').setColourRGB(0, 255, 0);
 
 Note: `classDecorator` works with JavaScript constructors that have a default implementation (they work properly with no arguments), and are new-agnostic (they can be called with new or as a normal function). `Todo` above has both properties.
 
-### functional iterators
+## Functional Iterators
 
 Functional iterators are stateful functions that "iterate over" the values in some ordered data set. You call the iterator repeatedly to obtain the values, and it will either never stop returning values (an infinite data set) or return `undefined` when there are no more values to return.
 
@@ -281,6 +287,8 @@ The functional iterators utilities are all namespaced:
 ```javascript
 var FunctionalIterators = require('allong.es').iterators;
 ```
+
+### FlatArrayIterator and RecursiveArrayIterator
 
 Making functional iterators from arrays:
 
@@ -328,7 +336,66 @@ i();
   //=> 5
 i();
   //=> undefined
-``` 
+```
+
+### range
+
+```javascript
+var range = FunctionalIterators.range;
+
+var i = range(1, 5);
+
+i();
+  //=> 1
+i();
+  //=> 2
+i();
+  //=> 3
+i();
+  //=> 4
+i();
+  //=> 5
+i();
+  //=> undefined
+
+var i = range(1, 5, 2);
+
+i();
+  //=> 1
+i();
+  //=> 3
+i();
+  //=> 5
+i();
+  //=> undefined
+
+var i = range(5, 1);
+
+i();
+  //=> 5
+i();
+  //=> 4
+i();
+  //=> 3
+i();
+  //=> 2
+i();
+  //=> 1
+i();
+  //=> undefined
+
+var i = range(1);
+
+i();
+  //=> 1
+i();
+  //=> 2
+i();
+  //=> 3
+// ...
+```
+
+### unfold and unfoldWithReturn
 
 Making functional iterators using generator functions:
 
@@ -393,6 +460,8 @@ i();
 // ...
 ```
 
+### map
+
 Stateless mapping of an iterator to another iterator:
 
 ```javascript
@@ -409,6 +478,8 @@ squares();
   //=> 9
 // ...
 ```
+
+### accumulate
 
 Accumulating an iterator to another iterator, a/k/a stateful mapping, with an optional seed:
 
@@ -450,7 +521,9 @@ runningTotal();
 // ...
 ```
 
-Accumulate with return. This code transforms filters duplicates out of an iterator of numbers by turning them into "false." It consumes space proportional to the time it runs and the size of the set of possible numbers in its iterator.
+### accumulateWithReturn
+
+This code transforms filters duplicates out of an iterator of numbers by turning them into "false." It consumes space proportional to the time it runs and the size of the set of possible numbers in its iterator.
 
 ```javascript
 var accumulateWithReturn = FunctionalIterators.accumulateWithReturn;
@@ -500,7 +573,7 @@ uniques();
 // ...
 ```
 
-Selection and Rejection:
+### select and reject
 
 ```javascript
 var select = FunctionalIterators.select,
@@ -536,5 +609,96 @@ odds();
   //=> 9
 odds();
   //=> 9
+// ...
+```
+
+Note: `select` and `reject` will enter an "infinite loop" if the iterator does not terminate and also does not have any elements matching the condition.
+
+### slice
+
+```javascript
+var slice = FunctionalIterators.slice,
+    numbers = unfold(1, function (n) { return n + 1; });
+
+var i = slice(numbers, 3);
+
+i();
+  //=> 4
+i();
+  //=> 5
+i();
+  //=> 6
+
+i = slice(numbers, 3, 2);
+
+i();
+  //=> 10
+i();
+  //=> 11
+i();
+  //=> undefined
+```
+
+### take
+
+```javascript
+var take = FunctionalIterators.take,
+    numbers = unfold(1, function (n) { return n + 1; });
+
+var i = take(numbers);
+
+i();
+  //=> 1
+i();
+  //=> undefined
+
+var i = take(numbers);
+
+i();
+  //=> 2
+i();
+  //=> undefined
+
+var i = take(numbers, 3);
+
+i();
+  //=> 3
+i();
+  //=> 4
+i();
+  //=> 5
+i();
+  //=> undefined
+// ...
+```
+
+### drop
+
+```javascript
+var drop = FunctionalIterators.drop,
+    numbers = unfold(1, function (n) { return n + 1; });
+
+drop(numbers);
+
+numbers();
+  //=> 2
+numbers();
+  //=> 3
+numbers();
+  //=> 4
+
+drop(numbers);
+
+numbers();
+  //=> 6
+numbers();
+  //=> 7
+
+drop(numbers, 3);
+
+numbers();
+  //=> 11
+numbers();
+  //=> 12
 // ...
 ```
