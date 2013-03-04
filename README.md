@@ -499,3 +499,42 @@ uniques();
   //=> false
 // ...
 ```
+
+Selection and Rejection:
+
+```javascript
+var select = FunctionalIterators.select,
+    reject = FunctionalIterators.reject;
+
+function isEven (number) {
+  return number === 0 || !isEven(number - 1);
+};
+
+var evens = select(randomNumbers, isEven);
+
+evens();
+  //=> 0
+evens();
+  //=> 6
+evens();
+  //=> 0
+evens();
+  //=> 2
+evens();
+  //=> 4
+// ...
+
+var odds = reject(randomNumbers, isEven);
+
+odds();
+  //=> 3
+odds();
+  //=> 1
+odds();
+  //=> 7
+odds();
+  //=> 9
+odds();
+  //=> 9
+// ...
+```
