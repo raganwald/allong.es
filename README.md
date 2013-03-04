@@ -449,3 +449,53 @@ runningTotal();
   //=> 20
 // ...
 ```
+
+Accumulate with return. This code transforms filters duplicates out of an iterator of numbers by turning them into "false." It consumes space proportional to the time it runs and the size of the set of possible numbers in its iterator.
+
+```javascript
+var accumulateWithReturn = FunctionalIterators.accumulateWithReturn;
+    
+var randomNumbers = function () {
+  return Math.floor(Math.random() * 10);
+};
+
+randomNumbers();
+  //=> 7
+randomNumbers();
+  //=> 0
+randomNumbers();
+  //=> 1
+randomNumbers();
+  //=> 1
+randomNumbers();
+  //=> 6
+// ...
+
+var uniques = accumulateWithReturn(randomNumbers, function (alreadySeen, number) {
+  var key = number.toString();
+  
+  if (alreadySeen[key]) {
+    return [alreadySeen, false];
+  }
+  else {
+    alreadySeen[key] = true;
+    return [alreadySeen, number];
+  }
+}, {});
+
+uniques();
+  //=> 7
+uniques();
+  //=> 5
+uniques();
+  //=> 1
+uniques();
+  //=> false
+uniques();
+  //=> 9
+uniques();
+  //=> 4
+uniques();
+  //=> false
+// ...
+```
