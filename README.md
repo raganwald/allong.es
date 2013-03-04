@@ -393,7 +393,7 @@ i();
 // ...
 ```
 
-Mapping an iterator to another iterator:
+Stateless mapping of an iterator to another iterator:
 
 ```javascript
 var map = FunctionalIterators.map;
