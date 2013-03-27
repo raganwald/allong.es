@@ -199,7 +199,7 @@ Role.prototype.set = fluent( function (property, name) {
   this[property] = name 
 })
 
-var doomed = new Attrs()
+var doomed = new Role()
   .set('name', "Fredo")
   .set('relationship', 'brother')
   .set('parts', ['I', 'II'])
