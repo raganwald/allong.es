@@ -722,3 +722,23 @@ numbers();
   //=> 12
 // ...
 ```
+
+## Trampolining
+
+```
+var trampoline = require('allong.es').trampoline,
+    tailCall = require('allong.es').tailCall;
+    
+function factorial (n) {
+  var _factorial = trampoline( function myself (acc, n) {
+    return n > 0
+      ? tailCall(myself, acc * n, n - 1)
+      : acc
+  });
+  
+  return _factorial(1, n);
+};
+
+factorial(10);
+  //=> 3628800
+```
