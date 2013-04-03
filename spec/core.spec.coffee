@@ -1,4 +1,4 @@
-{defaults} = require '../lib/allong.es.js'
+{unary, binary, ternary, variadic, compose, sequence, defaults} = require '../lib/allong.es.js'
 
 echo = (a, b, c) -> "#{a} #{b} #{c}"
 
