@@ -153,12 +153,12 @@ bound(fn, args...)(obj)
   //=> fn.bind(obj, args...)
 ```
 
-### getWith
+### attrWith
 
 ```javascript
-var getWith = require('allong.es').getWith;
+var attrWith = require('allong.es').attrWith;
     
-array.map(getWith('property'))
+array.map(attrWith('property'))
   //=> array.map(function (element) {
   //               return element['property']
   //             })
