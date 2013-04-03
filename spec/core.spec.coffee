@@ -1,7 +1,8 @@
 # unary, binary, ternary, variadic, compose, sequence???
-{defaults, mapWith, filterWith} = require '../lib/allong.es.js'
+{defaults, mapWith, attrWith, filterWith, compose, sequence, variadic, flip} = require '../lib/allong.es.js'
 
 echo = (a, b, c) -> "#{a} #{b} #{c}"
+parenthesize = (a) -> "(#{a})"
 square = (n) -> n * n
 oddP = (n) -> !!(n % 2)
 
@@ -34,3 +35,61 @@ describe "filterWith", ->
   it "should filter backwards, curried", ->
     expect( filterWith(oddP)([1..5]) ).toEqual [1, 3, 5]
 
+describe "compose", ->
+  
+  it "should compose two functions", ->
+    expect( compose(parenthesize, parenthesize)('hello') ).toEqual '((hello))'
+  
+  it "should respect the arity of the first function", ->
+    expect( compose(parenthesize, parenthesize).length ).toEqual 1
+    expect( compose(echo, parenthesize).length ).toEqual 3
+    
+  it "should handle a common use case, pluckWith", ->
+    myPluckWith = compose mapWith, attrWith
+    expect( myPluckWith('name')([{name: 'foo'}, {name: 'bar'}]) ).toEqual ['foo', 'bar']
+    expect( myPluckWith('name', [{name: 'foo'}, {name: 'bar'}]) ).toEqual ['foo', 'bar']
+
+describe "sequence", ->
+  
+  it "should sequence two functions", ->
+    expect( sequence(parenthesize, parenthesize)('hello') ).toEqual '((hello))'
+  
+  it "should respect the arity of the first function", ->
+    expect( sequence(parenthesize, parenthesize).length ).toEqual 1
+    expect( sequence(parenthesize, echo).length ).toEqual 3
+    
+  it "should handle a common use case, pluckWith", ->
+    myPluckWith = sequence attrWith, mapWith
+    expect( myPluckWith('name')([{name: 'foo'}, {name: 'bar'}]) ).toEqual ['foo', 'bar']
+    expect( myPluckWith('name', [{name: 'foo'}, {name: 'bar'}]) ).toEqual ['foo', 'bar']
+  
+describe "flip", ->
+  
+  a = (a) -> [a]
+  b = (a, b) -> [a, b]
+  c = (a, b, c) -> [a, b, c]
+  d = (a, b, c, d) -> [a, b, c, d]
+  v = variadic( (x) -> x )
+  
+  it "should flip a unary function", ->
+    expect( flip(a)(1) ).toEqual [1]
+    
+  it "should flip a binary function", ->
+    expect( flip(b)(1, 2) ).toEqual [2, 1]
+    
+  it "should flip a ternary function", ->
+    expect( flip(c)(1, 2, 3) ).toEqual [3, 2, 1]
+    
+  it "should flip a quaternary function", ->
+    expect( flip(d)(1, 2, 3, 4) ).toEqual [4, 3, 2, 1]
+    
+  it "should flip a variadic function", ->
+    expect( flip(v)(1, 2, 3, 4, 5) ).toEqual [5, 4, 3, 2, 1]
+    
+  it "should respect arities", ->
+    expect( flip(a).length ).toEqual a.length
+    expect( flip(b).length ).toEqual b.length
+    expect( flip(c).length ).toEqual c.length
+    # expect( flip(d).length ).toEqual d.length
+    # NO; We do not guarantee arity for length > 3
+    expect( flip(v).length ).toEqual v.length
