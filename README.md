@@ -128,6 +128,7 @@ var users = [
 ];
 
 var named = applyThisLast(function (element) { return !!element.name; }, reject)
+```
 
 ### curry
 
