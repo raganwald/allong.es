@@ -1,6 +1,9 @@
-{unary, binary, ternary, variadic, compose, sequence, defaults} = require '../lib/allong.es.js'
+# unary, binary, ternary, variadic, compose, sequence???
+{defaults, mapWith, filterWith} = require '../lib/allong.es.js'
 
 echo = (a, b, c) -> "#{a} #{b} #{c}"
+square = (n) -> n * n
+oddP = (n) -> !!(n % 2)
 
 describe "defaults", ->
   
@@ -14,4 +17,20 @@ describe "defaults", ->
     expect( defaults(echo, 'a', 'b', 'c')('A', 'B') ).toEqual 'A B c'
     expect( defaults(echo, 'a', 'b', 'c')('A', 'B', 'C') ).toEqual 'A B C'
     expect( defaults(echo, 'a', 'b', 'c')('A', 'B', 'C', 'D') ).toEqual 'A B C'
+    
+describe "mapWith", ->
+  
+  it "should map backwards", ->
+    expect( mapWith(square, [1..5]) ).toEqual [1, 4, 9, 16, 25]
+  
+  it "should map backwards, curried", ->
+    expect( mapWith(square)([1..5]) ).toEqual [1, 4, 9, 16, 25]
+    
+describe "filterWith", ->
+  
+  it "should filter backwards", ->
+    expect( filterWith(oddP, [1..5]) ).toEqual [1, 3, 5]
+  
+  it "should filter backwards, curried", ->
+    expect( filterWith(oddP)([1..5]) ).toEqual [1, 3, 5]
 

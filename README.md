@@ -26,6 +26,24 @@ fn(1,2,3)
   //=> { a: 1, b: [2, 3] }
 ```
 
+### unvariadic
+
+Makes a function that accepts any number of arguments into a unary function that accepts an array and applies the elements of the array to the function.
+
+```javascript
+var unvariadic = require('allong.es').unvariadic;
+
+function math (a, b, c) { return a * b + c };
+
+math(1, 2, 3);
+  //=> 5
+
+var fn = unvariadic(math);
+
+fn([1, 2, 3])
+  //=> 5
+```
+
 ### unary, binary, and ternary
 
 Sometimes, you have a function that takes multiple arguments, but you only want it to accept one, or two, or maybe three arguments and ignore the rest. For example, `parseInt` takes a radix as an optional second parameter. And that is havoc if you try to use it with `Array.map`:
@@ -93,6 +111,24 @@ inventories.map(send('apples'))
 inventories.forEach(send('addApples', 12))
 ```
 
+`applyFirst` and `applyLast` both have "flipped and curried" versions (`applyThisFirst` and `applyThisLast`). `applyThisLast` is especially useful for working with functions written in "collection - operation" style:
+
+```javascript
+var applyLast = require('allong.es').applyLast;
+
+function reject (list, predicate) {
+  return list.select(function (element) { return !predicate(element); });
+};
+
+var users = [
+  { name: 'Huey' },
+  { name: 'Dewey' },
+  { name: 'Louie' }
+  // ...
+];
+
+var named = applyThisLast(function (element) { return !!element.name; }, reject)
+
 ### curry
 
 ```javascript
@@ -117,12 +153,12 @@ bound(fn, args...)(obj)
   //=> fn.bind(obj, args...)
 ```
 
-### get
+### getWith
 
 ```javascript
-var get = require('allong.es').get;
+var getWith = require('allong.es').getWith;
     
-array.map(get('property'))
+array.map(getWith('property'))
   //=> array.map(function (element) {
   //               return element['property']
   //             })
@@ -147,13 +183,13 @@ sequence(a, b, c)
 
 ## List Combinators
 
-### splat and soak
+### mapWith and soak
 
 ```javascript
-var splat = require('allong.es').splat,
+var mapWith = require('allong.es').mapWith,
     soak = require('allong.es').soak;
     
-var squareList = splat(function (x) { return x * x })
+var squareList = mapWith(function (x) { return x * x })
 
 squareList([1, 2, 3, 4])
   //=> [1, 4, 9, 16]

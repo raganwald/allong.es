@@ -1,12 +1,12 @@
-{splat, soak} = require '../lib/allong.es.js'
+{mapWith, soak} = require '../lib/allong.es.js'
 
 square = (n) -> n * n
 
-describe 'splat', ->
+describe 'mapWith', ->
   
   it 'should square some numbers', ->
     
-    expect( splat(square)([1..5]) ).toEqual [1, 4, 9, 16, 25]
+    expect( mapWith(square)([1..5]) ).toEqual [1, 4, 9, 16, 25]
 
 describe 'soak', ->
   
