@@ -1,9 +1,10 @@
-{ applyLeft, apply, call, curry, unvariadic, args, sequence, applyThis, applyThisFirst } = require '../lib/allong.es.js'
+{ callLeft, callFirst, apply, call, curry, unvariadic, args, sequence, applyThis, callThisFirst } = require '../lib/allong.es.js'
 
 echo = (a, b, c) -> "#{a} #{b} #{c}"
 
 five = (a, b, c, d, e) -> [a, b, c, d, e]
 three = (a, b, c) -> [a, b, c]
+vari = (args...) -> args
 
 # unvariadic and apply duplicate each other's functionality
 
@@ -16,6 +17,9 @@ describe "apply", ->
   
   it "should apply an array of arguments to a function", ->
     expect( apply(echo, [1, 2, 3]) ).toEqual "1 2 3"
+    
+  it "should apply an array of arguments immediately to a nullary function", ->
+    expect( apply(vari, [4..6]) ).toEqual [4..6]
     
 # Curry and call duplicate each other's functionality
 
@@ -53,13 +57,37 @@ describe "args", ->
   it "should collect arguments into an array", ->
     expect( args(3)(1, 2, 3) ).toEqual [1, 2, 3]
 
-describe 'applyLeft', ->
+describe 'callLeft', ->
   
   it "should have a curried nature", ->
-    expect( applyLeft(five)(1, 2, 3, 4, 5) ).toEqual [1..5]
-    expect( applyLeft(five)(1, 2, 3)(4, 5) ).toEqual [1..5]
-    expect( applyLeft(five, 1, 2, 3)(4, 5) ).toEqual [1..5]
-    expect( applyLeft(five, 1, 2, 3)(4)(5) ).toEqual [1..5]
+    expect( callLeft(five)(1, 2, 3, 4, 5) ).toEqual [1..5]
+    expect( callLeft(five)(1, 2, 3)(4, 5) ).toEqual [1..5]
+    expect( callLeft(five, 1, 2, 3)(4, 5) ).toEqual [1..5]
+    expect( callLeft(five, 1, 2, 3)(4)(5) ).toEqual [1..5]
     
   it "should get the arity right for small amounts", ->
-    expect( applyLeft(five, 1, 2).length ).toEqual 3
+    expect( callLeft(five, 1, 2).length ).toEqual 3
+    
+describe 'callFirst', ->
+  
+  it 'should call with the first argument', ->
+    expect( callFirst(three, 1)(2, 3) ).toEqual [1..3]
+    
+  it 'should get the arity right', ->
+    expect( callFirst.length ).toEqual 2
+    expect( callFirst(three, 1).length ).toEqual 2
+    
+  it 'should be curried', ->
+    expect( callFirst(three)(1)(2, 3) ).toEqual [1..3]
+    
+describe 'callThisFirst', ->
+  
+  it 'should call with the first argument', ->
+    expect( callThisFirst(1, three)(2, 3) ).toEqual [1..3]
+    
+  it 'should get the arity right', ->
+    expect( callThisFirst.length ).toEqual 2
+    expect( callThisFirst(1, three).length ).toEqual 2
+    
+  it 'should be curried', ->
+    expect( callThisFirst(1)(three)(2, 3) ).toEqual [1..3]

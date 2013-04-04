@@ -1,5 +1,7 @@
 nb: * = autocurried (is or should be), | = should have a mirror "with" form
 
+reify everything around call and apply instead of around curry?
+
 Utilities, internal
 –------------------
 
@@ -38,9 +40,9 @@ list:
    reverse
    rotate
    
-applyFirst* | applyThisFirst*
+callFirst* | callThisFirst*
 applyLast* | applyThisLast*
-applyLeft*
+callLeft*
 applyRight*
 
 bound

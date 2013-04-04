@@ -68,21 +68,21 @@ Use `unary(parseInt)` to solve the problem:
 
 ## Partial Application
 
-The basics. Note: applyFirst is faster than applyLeft, use it if you are only applying a single argument. Likewise, applyLast is faster than applyRight.
+The basics. Note: callFirst is faster than callLeft, use it if you are only applying a single argument. Likewise, applyLast is faster than applyRight.
 
 ```javascript
-var applyFirst = require('allong.es').applyFirst,
+var callFirst = require('allong.es').callFirst,
     applyLast = require('allong.es').applyLast,
-    applyLeft = require('allong.es').applyLeft,
+    callLeft = require('allong.es').callLeft,
     applyRight = require('allong.es').applyRight;
 
 var base = function (greeting, you, me) { return greeting + ', ' + you + ', my name is ' + me }
-var hello = applyFirst(base, 'Hello')
+var hello = callFirst(base, 'Hello')
 
 hello('Giselle', 'Franka')
   //=> "Hello, Giselle, my name is Franka"
   
-var helloTom = applyLeft(base, 'Hello', 'Tom')
+var helloTom = callLeft(base, 'Hello', 'Tom')
 
 helloTom('Harry')
   //=> "Hello, Tom, my name is Harry"
@@ -111,7 +111,7 @@ inventories.map(send('apples'))
 inventories.forEach(send('addApples', 12))
 ```
 
-`applyFirst` and `applyLast` both have "flipped and curried" versions (`applyThisFirst` and `applyThisLast`). `applyThisLast` is especially useful for working with functions written in "collection - operation" style:
+`callFirst` and `applyLast` both have "flipped and curried" versions (`callThisFirst` and `applyThisLast`). `applyThisLast` is especially useful for working with functions written in "collection - operation" style:
 
 ```javascript
 var applyLast = require('allong.es').applyLast;
