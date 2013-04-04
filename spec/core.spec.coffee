@@ -1,5 +1,5 @@
 # unary, binary, ternary, variadic, compose, sequence???
-{defaults, mapWith, attrWith, filterWith, compose, sequence, variadic, flip} = require '../lib/allong.es.js'
+{defaults, mapWith, attrWith, filterWith, compose, sequence, variadic, flip, curry} = require '../lib/allong.es.js'
 
 echo = (a, b, c) -> "#{a} #{b} #{c}"
 parenthesize = (a) -> "(#{a})"
@@ -87,9 +87,15 @@ describe "flip", ->
     expect( flip(v)(1, 2, 3, 4, 5) ).toEqual [5, 4, 3, 2, 1]
     
   it "should respect arities", ->
+    expect( flip(v).length ).toEqual v.length
     expect( flip(a).length ).toEqual a.length
     expect( flip(b).length ).toEqual b.length
     expect( flip(c).length ).toEqual c.length
+    
     # expect( flip(d).length ).toEqual d.length
     # NO; We do not guarantee arity for length > 3
-    expect( flip(v).length ).toEqual v.length
+    
+  it 'should be self-currying', ->
+    expect( flip(b)(1)(2) ).toEqual [2, 1]
+    expect( flip(c)(1)(2)(3) ).toEqual [3, 2, 1]
+    expect( flip(d)(1)(2)(3)(4) ).toEqual [4, 3, 2, 1]

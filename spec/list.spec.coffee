@@ -1,4 +1,4 @@
-{list: {rotate, reverse}} = require '../lib/allong.es.js'
+{rotate, reverse} = require '../lib/internal/list'
 
 echo = (a, b, c) -> "#{a} #{b} #{c}"
 

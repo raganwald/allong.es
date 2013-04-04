@@ -1,4 +1,4 @@
-{ apply, call, curry, unvariadic, args, sequence, applyThis, applyThisFirst, list: {reverse} } = require '../lib/allong.es.js'
+{ apply, call, curry, unvariadic, args, sequence, applyThis, applyThisFirst } = require '../lib/allong.es.js'
 
 echo = (a, b, c) -> "#{a} #{b} #{c}"
 

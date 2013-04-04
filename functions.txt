@@ -1,0 +1,97 @@
+nb: * = autocurried (is or should be), | = should have a mirror "with" form
+
+Utilities, internal
+–------------------
+
+to_function
+functionalize
+extend
+
+Core-Core
+---------
+
+compose
+sequence
+curry
+flip
+
+
+Arity
+-----
+
+unary
+binary
+ternary
+variadic
+unvariadic
+
+
+
+defaults
+
+apply
+call
+args
+
+
+list: 
+   reverse
+   rotate
+   
+applyFirst* | applyThisFirst*
+applyLast* | applyThisLast*
+applyLeft*
+applyRight*
+
+bound
+mapWith
+mapWithIndex
+filterWith
+soak
+maybe
+tap
+fluent
+returnFirst
+tee
+once
+memoized
+mixin
+classDecorator
+bind
+unbind
+invoke
+attr
+attrWith
+send
+
+pluck* | pluckWith*
+trampoline
+tailCall
+Thunk
+
+iterators: 
+   accumulate
+   accumulateWithReturn
+   fold
+   unfold
+   unfoldWithReturn
+   map
+   select
+   reject
+   filter
+   find
+   slice
+   drop
+   take
+   FlatArrayIterator
+   RecursiveArrayIterator
+   constant
+   K
+   numbers
+   range
+
+Legacy Synonyms
+---------------
+
+splat
+splatWithIndex
