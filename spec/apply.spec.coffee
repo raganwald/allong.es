@@ -47,7 +47,11 @@ describe "call", ->
       expect( call(five)('x', 'y')(1)(2).length ).toEqual 1
       
   it "should give the correct arity at all times", ->
+    expect( call(twelve).length ).toEqual 12
     expect( call(twelve, 1).length ).toEqual 11
+    expect( call(twelve, 1, 2).length ).toEqual 10
+    expect( call(twelve, 1)(2).length ).toEqual 10
+    expect( call(twelve)(1, 2).length ).toEqual 10
 
 describe "call", ->
   
