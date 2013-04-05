@@ -1,4 +1,102 @@
-You really should be looking at the [allong.es home page](http://allong.es). Or the [source code](https://github.com/raganwald/allong.es/blob/master/lib/allong.es.js). But here's a cheat sheet:
+# `allong.es`
+
+The `allong.es` library is a collection of functions designed to facilitate writing JavaScript and/or CoffeeScript with functions as first-class values. The emphasis in `allong.es` is on composing and decomposing functions using combinators and decorators. It complements libraries like [Underscore](http://underscorejs.org) rather than competing with them.
+
+## Where to Begin
+
+The most important functions are **call**, **apply**, and **callFlipped**. These had different names in earlier releases, however their new names bring them into harmony with JavaScript's `.call` and `.apply` methods.
+
+### call
+
+Call [curries](http://raganwald.com/2013/03/07/currying-and-partial-application.html) a function and then calls it with any additional parameters you may supply. So if you supply all the parameters, it acts like the `.call` method:
+
+```javascript
+function greet (how, whom) {
+  return '' + how + ', ' + whom + '!';
+};
+  
+call(greet, 'Hello', 'Tom')
+  //=> 'Hello, Tom!'
+```
+
+But if you supply fewer or no parameters, you get back a partially applied function:
+
+```javascript
+function greet (how, whom) {
+  return '' + how + ', ' + whom + '!';
+};
+  
+var hello = call(greet, 'Hello')
+  //=> [Function]
+  
+hello('Tom')
+  //=> 'Hello, Tom!'
+```
+
+And if you supply no parameters at all, you get back a curried function:
+
+```javascript
+function greet (how, whom) {
+  return '' + how + ', ' + whom + '!';
+};
+  
+var hello = call(greet)
+  //=> [Function]
+  
+hello('Hi')('Sue')
+  //=> 'Hi, Sue!'
+```
+
+### variations
+
+`callFlipped` reverses the order of applying arguments.
+
+`apply` only allows one argument to be supplied, an array of arguments. It works like the `.apply` method:
+
+```javascript
+function greet (how, whom) {
+  return '' + how + ', ' + whom + '!';
+};
+  
+call(greet, ['Hey', 'Jim'])
+  //=> 'Hey Him!'
+```
+
+It also curries and/or partially applies the function if you don't supply enough arguments:
+
+```javascript
+var hello = call(greet, [])
+  //=> [Function]
+  
+hello('Hi')('Sue')
+  //=> 'Hi, Sue!'
+```
+
+But if you omit the array, you get back a curried form of `apply` that expects an array of parameters. If that isn't what you want, use `call`.
+
+### a note about the nomenclature
+
+It's traditional in functional programming to use the word "apply" liberally for all functions that perform partial or total application. It is a conscious choice to bring the  `allong.es` naming in line with existing JavaScript tradition.
+
+## Folding
+
+`allong.es` provides its own `map` for completeness, taking as its parameters a list and a mapping function. Unlike some other libraries, `map` is curried. `allong.es` also provides a flipped and curried version called `mapWith`.
+
+Because `mapWith` is also curried, you can create mapper functions simply by omitting the list. FInally, there are `deepMap` and `deepMapWith` functions for mapping trees:
+
+```javascript
+var squareList = mapWith(function (x) { return x * x })
+
+squareList([1, 2, 3, 4])
+  //=> [1, 4, 9, 16]
+  
+var squareTree = deepMap(function (x) { return x * x })
+
+squareTree([1, 2, [3, 4]])
+  //=> [1, 4, [9, 16]]
+```
+
+---
 
 ## Arity Function Decorators
 
@@ -184,18 +282,18 @@ sequence(a, b, c)
 
 ## List Combinators
 
-### mapWith and soak
+### mapWith and deepMapWith
 
 ```javascript
 var mapWith = require('allong.es').mapWith,
-    soak = require('allong.es').soak;
+    deepMapWith = require('allong.es').deepMapWith;
     
 var squareList = mapWith(function (x) { return x * x })
 
 squareList([1, 2, 3, 4])
   //=> [1, 4, 9, 16]
   
-var squareTree = soak(function (x) { return x * x })
+var squareTree = deepMapWith(function (x) { return x * x })
 
 squareTree([1, 2, [3, 4]])
   //=> [1, 4, [9, 16]]

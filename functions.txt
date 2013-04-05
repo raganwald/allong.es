@@ -49,7 +49,7 @@ bound
 mapWith
 mapWithIndex
 filterWith
-soak
+deepMap
 maybe
 tap
 fluent
