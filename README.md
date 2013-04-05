@@ -47,6 +47,8 @@ hello('Hi')('Sue')
   //=> 'Hi, Sue!'
 ```
 
+`call` thus subsumes the functionality formerly knows as `curry`, `applyFirst`, and `applyLeft`. This is a small departure from "functional programming" conventions, but it is in keeping with JavaScript's naming conventions.
+
 ### variations
 
 `callFlipped` reverses the order of applying arguments.
@@ -59,7 +61,7 @@ function greet (how, whom) {
 };
   
 call(greet, ['Hey', 'Jim'])
-  //=> 'Hey Him!'
+  //=> 'Hey Jim!'
 ```
 
 It also curries and/or partially applies the function if you don't supply enough arguments:
@@ -74,26 +76,85 @@ hello('Hi')('Sue')
 
 But if you omit the array, you get back a curried form of `apply` that expects an array of parameters. If that isn't what you want, use `call`.
 
-### a note about the nomenclature
+### callFlipped
 
-It's traditional in functional programming to use the word "apply" liberally for all functions that perform partial or total application. It is a conscious choice to bring the  `allong.es` naming in line with existing JavaScript tradition.
+As mentioned above, `callFlipped` takes a function and reverses its parameter order, then curries it just like `call`. It can be used just to flip a function over:
 
-## Folding
+```coffeescript
+oneTwoThree = (a, b, c) -> [a, b, c]
+oneTwoThree 1, 2, 3
+  #=> [1, 2, 3]
+threeTwoOne = callFlipped(oneTwoThree)
+threeTwoOne 1, 2, 3
+  #=> [3, 2, 1]
+```
 
-`allong.es` provides its own `map` for completeness, taking as its parameters a list and a mapping function. Unlike some other libraries, `map` is curried. `allong.es` also provides a flipped and curried version called `mapWith`.
+You can also supply some arguments immediately, or provide fewer arguments and get a curried function back later. This can be interesting. Consider:
 
-Because `mapWith` is also curried, you can create mapper functions simply by omitting the list. FInally, there are `deepMap` and `deepMapWith` functions for mapping trees:
+```coffeescript
+map [1..5], (x) -> x * x
+  #=> [1, 4, 9, 16, 25]
+
+squarer = callFlipped map, (x) -> x * x
+squarer [1..5]
+  #=> [1, 4, 9, 16, 25]
+
+splat = callFlipped map
+anotherSquarer = splat (x) -> x * x
+anotherSquarer [1..5]
+  #=> [1, 4, 9, 16, 25]
+```
+
+### callRight
+
+`callRight` is just like `call`, in that it returns a curried function if you don't provide any arguments:
 
 ```javascript
-var squareList = mapWith(function (x) { return x * x })
-
-squareList([1, 2, 3, 4])
-  //=> [1, 4, 9, 16]
+function greet (how, whom) {
+  return '' + how + ', ' + whom + '!';
+};
   
-var squareTree = deepMap(function (x) { return x * x })
+callRight(greet)('Hey', 'Jim')
+  //=> 'Hey Jim!'
+```
 
-squareTree([1, 2, [3, 4]])
-  //=> [1, 4, [9, 16]]
+And if you provide all the arguments, it applies them and calls the function:
+
+```javascript
+callRight(greet, 'Hey', 'Jim')
+  //=> 'Hey Jim!'
+```
+
+But if you provide fewer arguments, it partially applies them *to the right*:
+
+```javascript
+callRight(greet, 'Hey')('Jim')
+  //=> 'Jim Hey!'
+```
+
+`callRight` thus handles all of our rightmost partial application chores for us.
+
+### with
+
+`splat` was present in earlier versions of `allong.es` but has been deprecated as being too cryptic. Instead, there is a general naming convention that works as follows. Many binary functions such as `map` and `filter` are historically written to take a noun or collection as the first argument and a verb as the second.
+
+However, reversing and currying these functions is super-useful as it makes composeable functions out of them. That's why `callFlipped` is so important. But to save you the trouble of writing `callFlipped map` everywhere, many such functions in `allong.es` have a clipped version pre-defined and named with the suffix `With`:
+
+```
+map(list, function)        => mapWith(function, list)
+filter(list, function)     => filterWith(function, list)
+attr(object, propertyName) => attrWith(object, propertyName)
+pluck(list, propertyName)  => pluckWith(propertyName, list)
+```
+
+So you "map" a list, but "mapWith" a function. And of course, they are all curried. For example:
+
+```
+map(list)(function)        => mapWith(function)(list)
+deepMap(list)(function)    => deepMapWith(function)(list)
+filter(list)(function)     => filterWith(function)(list)
+attr(object)(propertyName) => attrWith(object)(propertyName)
+pluck(list)(propertyName)  => pluckWith(propertyName)(list)
 ```
 
 ---

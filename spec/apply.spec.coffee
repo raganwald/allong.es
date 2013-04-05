@@ -1,4 +1,4 @@
-{ callLeft, callFirst, apply, call, call, unvariadic, args, sequence, applyThis, callThisFirst } = require '../lib/allong.es.js'
+{ callRight, callFirst, apply, call, call, unvariadic, args, sequence, applyThis, callThisFirst } = require '../lib/allong.es.js'
 
 echo = (a, b, c) -> "#{a} #{b} #{c}"
 
@@ -65,7 +65,23 @@ describe "call", ->
     expect( call(five, 1, 2, 3)(4)(5) ).toEqual [1..5]
     
   it "should get the arity right for small amounts", ->
-    expect( callLeft(five, 1, 2).length ).toEqual 3
+    expect( call(five, 1, 2).length ).toEqual 3
+
+describe "callRight", ->
+  
+  it "should call an array of arguments to a function", ->
+    expect( callRight(echo, 1, 2, 3) ).toEqual "1 2 3"
+  
+  it "should have a curried nature", ->
+    expect( callRight(five)(1, 2, 3, 4, 5) ).toEqual [1..5]
+    expect( callRight(five)(1, 2, 3)(4, 5) ).toEqual [1..5]
+    
+  it "shoudl apply given arguments to the right", ->
+    expect( callRight(five, 1, 2, 3)(4, 5) ).toEqual [4, 5, 1, 2, 3]
+    expect( callRight(five, 1, 2, 3)(4)(5) ).toEqual [4, 5, 1, 2, 3]
+    
+  it "should get the arity right for small amounts", ->
+    expect( callRight(five, 1, 2).length ).toEqual 3
     
 describe 'callFirst', ->
   
