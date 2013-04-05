@@ -4,14 +4,15 @@ echo = (a, b, c) -> "#{a} #{b} #{c}"
 
 five = (a, b, c, d, e) -> [a, b, c, d, e]
 three = (a, b, c) -> [a, b, c]
+twelve = (a, b, c, d, e, f, g, h, i, j, k, l) ->
 vari = (args...) -> args
-
-# unvariadic and apply duplicate each other's functionality
+one = (x) -> x
 
 describe "unvariadic", ->
   
   it "should unvariadic an array of arguments to a function", ->
-    expect( unvariadic(echo)([1, 2, 3]) ).toEqual "1 2 3"
+    expect( unvariadic(3, vari)(1, 2, 3) ).toEqual [1..3]
+    expect( unvariadic(2, vari)(1, 2, 3) ).toEqual [1, 2]
 
 describe "apply", ->
   
@@ -44,6 +45,9 @@ describe "call", ->
       expect( call(five)('x', 'y')(1).length ).toEqual 2
       expect( call(five)('x', 'y')(1, 2).length ).toEqual 1
       expect( call(five)('x', 'y')(1)(2).length ).toEqual 1
+      
+  it "should give the correct arity at all times", ->
+    expect( call(twelve, 1).length ).toEqual 11
 
 describe "call", ->
   
