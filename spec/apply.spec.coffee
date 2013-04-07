@@ -8,12 +8,6 @@ twelve = (a, b, c, d, e, f, g, h, i, j, k, l) ->
 vari = (args...) -> args
 one = (x) -> x
 
-describe "unvariadic", ->
-  
-  it "should unvariadic an array of arguments to a function", ->
-    expect( unvariadic(3, vari)(1, 2, 3) ).toEqual [1..3]
-    expect( unvariadic(2, vari)(1, 2, 3) ).toEqual [1, 2]
-
 describe "apply", ->
   
   it "should apply an array of arguments to a function", ->
@@ -77,6 +71,10 @@ describe "callRight", ->
     expect( callRight(five)(1, 2, 3)(4, 5) ).toEqual [1..5]
     
   it "shoudl apply given arguments to the right", ->
+    expect( callRight(five, 1)(2, 3, 4, 5) ).toEqual [2, 3, 4, 5, 1]
+    expect( callRight(five, 1, 2)(3, 4, 5) ).toEqual [3, 4, 5, 1, 2]
+    expect( callRight(five, 1, 2, 3)(4, 5) ).toEqual [4, 5, 1, 2, 3]
+    expect( callRight(five, 1, 2, 3, 4)(5) ).toEqual [5, 1, 2, 3, 4]
     expect( callRight(five, 1, 2, 3)(4, 5) ).toEqual [4, 5, 1, 2, 3]
     expect( callRight(five, 1, 2, 3)(4)(5) ).toEqual [4, 5, 1, 2, 3]
     
