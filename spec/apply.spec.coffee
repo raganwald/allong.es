@@ -1,6 +1,7 @@
 { callRight, applyNow, callNow, applyThisNow, 
   call, applyLeftNow, callLeftNow, args, applyThisLeftNow,
-  applyRightNow, callRightNow, applyThisRightNow
+  applyRightNow, callRightNow, applyThisRightNow,
+  callFirst, callThisFirst, callLast, callThisLast
 } = require '../lib/allong.es.js'
 
 echo = (a, b, c) -> "#{a} #{b} #{c}"
