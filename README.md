@@ -1,14 +1,10 @@
 # `allong.es`
 
-The `allong.es` library is a collection of functions designed to facilitate writing JavaScript and/or CoffeeScript with functions as first-class values. The emphasis in `allong.es` is on composing and decomposing functions using combinators and decorators. It complements libraries like [Underscore](http://underscorejs.org) rather than competing with them.
+The `allong.es` library is a collection of functions designed to facilitate writing JavaScript and/or CoffeeScript with functions as first-class values. The emphasis in `allong.es` is on composing and decomposing functions using combinators and decorators. `allong.es` is designed to complement libraries like [Underscore](http://underscorejs.org), not compete with them.
 
-## Where to Begin
+## Currying and Partial Application
 
-The most important functions are **call**, **apply**, and **callFlipped**. These had different names in earlier releases, however their new names bring them into harmony with JavaScript's `.call` and `.apply` methods.
-
-### call
-
-Call [curries](http://raganwald.com/2013/03/07/currying-and-partial-application.html) a function and then calls it with any additional parameters you may supply. So if you supply all the parameters, it acts like the `.call` method:
+At the heart of `allong.es` are the functions that curry and partially apply other functions. The two most important to understand are `call` and `apply`. They work very much like the `.call` and `.apply` methods that every JavaScript function implements:
 
 ```javascript
 function greet (how, whom) {
@@ -17,122 +13,82 @@ function greet (how, whom) {
   
 call(greet, 'Hello', 'Tom')
   //=> 'Hello, Tom!'
-```
-
-But if you supply fewer or no parameters, you get back a partially applied function:
-
-```javascript
-function greet (how, whom) {
-  return '' + how + ', ' + whom + '!';
-};
   
-var hello = call(greet, 'Hello')
-  //=> [Function]
-  
-hello('Tom')
+apply(greet, ['Hello', 'Tom'])
   //=> 'Hello, Tom!'
 ```
 
-And if you supply no parameters at all, you get back a curried function:
+Their "special sauce" is that they automatically *curry* the supplied function, so if you provide fewer or no arguments, you get back a partially applied or curried function:
 
 ```javascript
-function greet (how, whom) {
-  return '' + how + ', ' + whom + '!';
-};
+call(greet)('Hello')('Tom')
+  //=> 'Hello, Tom!'
   
-var hello = call(greet)
-  //=> [Function]
+call(greet, 'Hello')('Tom'])
+  //=> 'Hello, Tom!'
   
-hello('Hi')('Sue')
-  //=> 'Hi, Sue!'
-```
-
-`call` thus subsumes the functionality formerly knows as `curry`, `applyFirst`, and `applyLeft`. This is a small departure from "functional programming" conventions, but it is in keeping with JavaScript's naming conventions.
-
-### variations
-
-`callFlipped` reverses the order of applying arguments.
-
-`apply` only allows one argument to be supplied, an array of arguments. It works like the `.apply` method:
-
-```javascript
-function greet (how, whom) {
-  return '' + how + ', ' + whom + '!';
-};
+apply(greet, [])('Hello')('Tom')
+  //=> 'Hello, Tom!'
   
-call(greet, ['Hey', 'Jim'])
-  //=> 'Hey Jim!'
+apply(greet, ['Hello'])('Tom'])
+  //=> 'Hello, Tom!'
 ```
 
-It also curries and/or partially applies the function if you don't supply enough arguments:
+### immediate application
+
+If you don't want the currying/partial application behaviour, there is an immediate application version named (appropriately), `callNow` (and also another named `applyNow`, not shown):
 
 ```javascript
-var hello = call(greet, [])
-  //=> [Function]
+callNow(greet, 'Hello', 'Tom')
+  //=> 'Hello, Tom!'
   
-hello('Hi')('Sue')
-  //=> 'Hi, Sue!'
+callNow(greet, 'Hello')
+  //=> 'Hello, undefined!'
 ```
 
-But if you omit the array, you get back a curried form of `apply` that expects an array of parameters. If that isn't what you want, use `call`.
+### variations on the order of applying the arguments
 
-### callFlipped
-
-As mentioned above, `callFlipped` takes a function and reverses its parameter order, then curries it just like `call`. It can be used just to should a function over:
-
-```coffeescript
-oneTwoThree = (a, b, c) -> [a, b, c]
-oneTwoThree 1, 2, 3
-  #=> [1, 2, 3]
-threeTwoOne = callFlipped(oneTwoThree)
-threeTwoOne 1, 2, 3
-  #=> [3, 2, 1]
-```
-
-You can also supply some arguments immediately, or provide fewer arguments and get a curried function back later. This can be interesting. Consider:
-
-```coffeescript
-map [1..5], (x) -> x * x
-  #=> [1, 4, 9, 16, 25]
-
-squarer = callFlipped map, (x) -> x * x
-squarer [1..5]
-  #=> [1, 4, 9, 16, 25]
-
-splat = callFlipped map
-anotherSquarer = splat (x) -> x * x
-anotherSquarer [1..5]
-  #=> [1, 4, 9, 16, 25]
-```
-
-### callRightCurried
-
-`callRightCurried` is just like `call`, in that it returns a curried function if you don't provide any arguments:
+`callRight` applies any arguments supplied to the right. If you supply all the arguments, it's the same as `call`, but if you supply fewer arguments, you get a right partial application:
 
 ```javascript
-function greet (how, whom) {
-  return '' + how + ', ' + whom + '!';
-};
+callRight(greet, 'Hello', 'Tom')
+  //=> 'Hello, Tom!'
   
-callRightCurried(greet)('Hey', 'Jim')
-  //=> 'Hey Jim!'
+callRight(greet, 'Hello')('Tom')
+  //=> 'Tom, Hello!'
+  
+callFlipped(greet)('Hello')('Tom')
+  //=> 'Hello, Tom!'
 ```
 
-And if you provide all the arguments, it applies them and calls the function:
+`callFlipped` applies the arguments backwards, even when curried:
 
 ```javascript
-callRightCurried(greet, 'Hey', 'Jim')
-  //=> 'Hey Jim!'
+callFlipped(greet, 'Hello', 'Tom')
+  //=> 'Tom, Hello!'
+  
+callFlipped(greet, 'Hello')('Tom')
+  //=> 'Tom, Hello!'
+  
+callFlipped(greet)('Hello')('Tom')
+  //=> 'Tom, Hello!'
 ```
 
-But if you provide fewer arguments, it partially applies them *to the right*:
+### more partial application
+
+`callLeft` is actually synonymous with `call`: It applies arguments given to the left. We've seen `callRight` above. Both are *variadic*: You can supply as many arguments as you want.
+
+`callFirst` and `callLast` are just like `callLeft` and `callRight`, but they are *binary* functions: They accept a function and exactly one argument. This is sometimes useful when combining functions together.
+
+`callFirst` and `callLast` both have "flipped and curried" versions (`callThisFirst` and `callThisLast`). `callThisLast` is especially useful for working with functions written in "collection - operation" style. Here we take advantage of the fact that they are "automatically curried" to implement the popular `pluck` function.
+
+### currying
+
+`allong.es` does support the `curry` function, it is implemented as the unary form of `call`:
 
 ```javascript
-callRightCurried(greet, 'Hey')('Jim')
-  //=> 'Jim Hey!'
+var curry = unary(call);
 ```
-
-`callRightCurried` thus handles all of our rightmost partial application chores for us.
 
 ### with
 
@@ -157,7 +113,39 @@ attr(object)(propertyName) => attrWith(object)(propertyName)
 pluck(list)(propertyName)  => pluckWith(propertyName)(list)
 ```
 
----
+Thus if you have a collection such as:
+
+```javascript
+var users = [
+  { name: 'Huey' },
+  { name: 'Dewey' },
+  { name: 'Louie' }
+]
+```
+
+You can get the names with either:
+
+```javascript
+pluck(users, 'name')
+  //=> ['Huey', 'Dewey', 'Louie']
+```
+
+Or:
+
+```javascript
+pluckWith('name', users)
+  //=> ['Huey', 'Dewey', 'Louie']
+```
+
+The latter is interesting because `pluck` and `pluckWith` are both automatically curried (like almost everything that isn't named "now"). Thus, we could also write:
+
+```javascript
+var namesOf = pluckWith('name');
+
+// ...
+namesOf(users)
+  //=> ['Huey', 'Dewey', 'Louie']
+```
 
 ## Arity Function Decorators
 
@@ -185,22 +173,22 @@ fn(1,2,3)
   //=> { a: 1, b: [2, 3] }
 ```
 
-### unvariadic
+### variadic, part ii
 
-Makes a function that accepts any number of arguments into a unary function that accepts an array and applies the elements of the array to the function.
+When given just the function, `variadic` returns a function with an arity of zero. This is consistent with JavaScript programming practice. There are times when you wish to report an arity, meaning that you want the returned function to have its `length` attribute set.
+
+You do this by prefacing the function argument with a length:
 
 ```javascript
-var unvariadic = require('allong.es').unvariadic;
+fn = variadic(function (a,b) { return { a: a, b: b } });
 
-function math (a, b, c) { return a * b + c };
+fn.length
+  //=> 0
+  
+fn2 = variadic(1, function (a,b) { return { a: a, b: b } }); 
 
-math(1, 2, 3);
-  //=> 5
-
-var fn = unvariadic(math);
-
-fn([1, 2, 3])
-  //=> 5
+fn2.length
+  //=> 1
 ```
 
 ### unary, binary, and ternary
@@ -224,83 +212,6 @@ Use `unary(parseInt)` to solve the problem:
 ```
 
 `binary` has similar uses when working with `Array.reduce` and its habit of passing three parameters to your supplied function.
-
-## Partial Application
-
-The basics. Note: callFirst is faster than callLeft, use it if you are only applying a single argument. Likewise, applyLast is faster than applyRight.
-
-```javascript
-var callFirst = require('allong.es').callFirst,
-    applyLast = require('allong.es').applyLast,
-    callLeft = require('allong.es').callLeft,
-    applyRight = require('allong.es').applyRight;
-
-var base = function (greeting, you, me) { return greeting + ', ' + you + ', my name is ' + me }
-var hello = callFirst(base, 'Hello')
-
-hello('Giselle', 'Franka')
-  //=> "Hello, Giselle, my name is Franka"
-  
-var helloTom = callLeft(base, 'Hello', 'Tom')
-
-helloTom('Harry')
-  //=> "Hello, Tom, my name is Harry"
-  
-var ingrid = applyLast(base, 'Ingrid')
-
-ingrid('Hi', 'Pia')
-  //=> "Hi, Pia, my name is Ingrid"
-  
-var anthonyCarla = applyRight(base, 'Anthony', 'Carla')
-
-anthonyCarla('Yo')
-  //=> "Yo, Anthony, my name is Carla"
-```
-
-Partial application is also useful for methods:
-
-```javascript
-var send = require('allong.es').send;
-    
-// sends a message
-inventories.map(send('apples')) 
-  //=> [ 0, 240, 24 ]
-
-// sends a message and partially applies an argument
-inventories.forEach(send('addApples', 12))
-```
-
-`callFirst` and `applyLast` both have "flipped and curried" versions (`callThisFirst` and `applyThisLast`). `applyThisLast` is especially useful for working with functions written in "collection - operation" style:
-
-```javascript
-var applyLast = require('allong.es').applyLast;
-
-function reject (list, predicate) {
-  return list.select(function (element) { return !predicate(element); });
-};
-
-var users = [
-  { name: 'Huey' },
-  { name: 'Dewey' },
-  { name: 'Louie' }
-  // ...
-];
-
-var named = applyThisLast(function (element) { return !!element.name; }, reject)
-```
-
-### curry
-
-```javascript
-var curry = require('allong.es').curry;
-    
-curry( function (x, y) { return x } )
-  //=> function (x) {
-  //     return function (y) {
-  //       return x
-  //     }
-  //   }
-```
 
 ## Miscellaneous Combinators
 
