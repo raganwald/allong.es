@@ -1,4 +1,7 @@
-{ callRight, callFirst, apply, call, call, unvariadic, args, sequence, applyThis, callThisFirst } = require '../lib/allong.es.js'
+{ callRight, applyNow, callNow, applyThisNow, 
+  call, applyLeftNow, callLeftNow, args, applyThisLeftNow,
+  applyRightNow, callRightNow, applyThisRightNow
+} = require '../lib/allong.es.js'
 
 echo = (a, b, c) -> "#{a} #{b} #{c}"
 
@@ -8,44 +11,113 @@ twelve = (a, b, c, d, e, f, g, h, i, j, k, l) ->
 vari = (args...) -> args
 one = (x) -> x
 
-describe "apply", ->
+describe "applyNow", ->
   
   it "should apply an array of arguments to a function", ->
-    expect( apply(echo, [1, 2, 3]) ).toEqual "1 2 3"
+    expect( applyNow(three, [1, 2, 3]) ).toEqual three(1, 2, 3)
     
-  it "should apply an array of arguments immediately to a nullary function", ->
-    expect( apply(vari, [4..6]) ).toEqual [4..6]
+  it "should not be self-currying, it should apply what it gets", ->
+    expect( applyNow(three, [1, 2]) ).toEqual three(1, 2)
+    expect( applyNow(three, [1]) ).toEqual three(1)
+    
+  it "should be curried", ->
+    expect( applyNow(three)([1, 2, 3]) ).toEqual three(1, 2, 3)
+    
+  describe "when flipped", ->
+    
+    it "should apply an array of arguments to a function", ->
+      expect( applyThisNow([1, 2, 3], three) ).toEqual three(1, 2, 3)
 
-describe "call", ->
+    it "should be curried", ->
+      expect( applyThisNow([1, 2, 3])(three) ).toEqual three(1, 2, 3)
+
+describe "callNow", ->
   
-  describe "when given a ternary function", ->
-  
-    it "should call aggregate arguments", ->
-      expect( call(echo)(1)(2)(3) ).toEqual "1 2 3"
-      expect( call(echo)(1, 2)(3) ).toEqual "1 2 3"
-      expect( call(echo)(1)(2, 3) ).toEqual "1 2 3"
-      expect( call(echo)(1, 2, 3) ).toEqual "1 2 3"
+  it "should apply arguments to a function", ->
+    expect( callNow(three, 1, 2, 3) ).toEqual three(1, 2, 3)
     
-    it "should have the correct arity", ->
-      expect( call(three).length ).toEqual 3
-      expect( call(three)(1).length ).toEqual 2
-      expect( call(three)(1, 2).length ).toEqual 1
-      expect( call(three)(1)(2).length ).toEqual 1
-  
-  describe "when given a pentary function", ->
+  it "should not be self-currying, it should apply what it gets", ->
+    expect( callNow(three, 1, 2) ).toEqual three(1, 2)
+    expect( callNow(three, 1) ).toEqual three(1)
     
-    it "should have the correct arity", ->
-      expect( call(five)('x', 'y').length ).toEqual 3
-      expect( call(five)('x', 'y')(1).length ).toEqual 2
-      expect( call(five)('x', 'y')(1, 2).length ).toEqual 1
-      expect( call(five)('x', 'y')(1)(2).length ).toEqual 1
-      
-  it "should give the correct arity at all times", ->
-    expect( call(twelve).length ).toEqual 12
-    expect( call(twelve, 1).length ).toEqual 11
-    expect( call(twelve, 1, 2).length ).toEqual 10
-    expect( call(twelve, 1)(2).length ).toEqual 10
-    expect( call(twelve)(1, 2).length ).toEqual 10
+  it "should not be curried", ->
+    expect( callNow(three) ).toEqual three()
+    
+  # variadic functions do not have a 'this' predefined at this point.
+    
+describe "applyLeftNow", ->
+  
+  it 'should apply all the arguments if possible', ->
+    expect( applyLeftNow(three, [1, 2, 3]) ).toEqual three(1, 2, 3)
+    
+  it 'should not be full application', ->
+    expect( applyLeftNow(three, [1, 2]) ).not.toEqual three(1, 2)
+    expect( applyLeftNow(three, [1, 2])(3) ).toEqual three(1, 2, 3)
+    
+  it 'should not be fully curried', ->
+    expect( applyLeftNow(three, [1])(2) ).toEqual three(1, 2)
+    
+  describe "when flipped", ->
+  
+    it 'should apply all the arguments if possible', ->
+      expect( applyThisLeftNow([1, 2, 3], three) ).toEqual three(1, 2, 3)
+    
+    it 'should not be full application', ->
+      expect( applyThisLeftNow([1, 2], three) ).not.toEqual three(1, 2)
+      expect( applyThisLeftNow([1, 2], three)(3) ).toEqual three(1, 2, 3)
+    
+    it 'should not be fully curried', ->
+      expect( applyThisLeftNow([1], three)(2) ).toEqual three(1, 2)
+    
+describe "callLeftNow", ->
+  
+  it 'should apply all the arguments if possible', ->
+    expect( callLeftNow(three, 1, 2, 3) ).toEqual three(1, 2, 3)
+    
+  it 'should not be full application', ->
+    expect( callLeftNow(three, 1, 2) ).not.toEqual three(1, 2)
+    expect( callLeftNow(three, 1, 2)(3) ).toEqual three(1, 2, 3)
+    
+  it 'should not be fully curried', ->
+    expect( callLeftNow(three, 1)(2) ).toEqual three(1, 2)
+
+describe "applyRightNow", ->
+  
+  it 'should apply all the arguments if possible', ->
+    expect( applyRightNow(three, [1, 2, 3]) ).toEqual three(1, 2, 3)
+    
+  it 'should not be full application', ->
+    expect( applyRightNow(three, [1, 2]) ).not.toEqual three(1, 2)
+    expect( applyRightNow(three, [1, 2])(3) ).toEqual three(3, 1, 2)
+    
+  it 'should not be fully curried', ->
+    expect( applyRightNow(three, [1])(2) ).toEqual three(2, 1)
+    
+  describe "when flipped", ->
+  
+    it 'should apply all the arguments if possible', ->
+      expect( applyThisRightNow([1, 2, 3], three) ).toEqual three(1, 2, 3)
+    
+    it 'should not be full application', ->
+      expect( applyThisRightNow([1, 2], three) ).not.toEqual three(1, 2)
+      expect( applyThisRightNow([1, 2], three)(3) ).toEqual three(3, 1, 2)
+    
+    it 'should not be fully curried', ->
+      expect( applyThisRightNow([1], three)(2) ).toEqual three(2, 1)
+    
+describe "callRightNow", ->
+  
+  it 'should apply all the arguments if possible', ->
+    expect( callRightNow(three, 1, 2, 3) ).toEqual three(1, 2, 3)
+    
+  it 'should not be full application', ->
+    expect( callRightNow(three, 1, 2) ).not.toEqual three(1, 2)
+    expect( callRightNow(three, 1, 2)(3) ).toEqual three(3, 1, 2)
+    
+  it 'should not be fully curried', ->
+    expect( callRightNow(three, 1)(2) ).toEqual three(2, 1)
+    
+################################
 
 describe "call", ->
   
@@ -70,7 +142,7 @@ describe "callRight", ->
     expect( callRight(five)(1, 2, 3, 4, 5) ).toEqual [1..5]
     expect( callRight(five)(1, 2, 3)(4, 5) ).toEqual [1..5]
     
-  it "shoudl apply given arguments to the right", ->
+  it "should apply given arguments to the right", ->
     expect( callRight(five, 1)(2, 3, 4, 5) ).toEqual [2, 3, 4, 5, 1]
     expect( callRight(five, 1, 2)(3, 4, 5) ).toEqual [3, 4, 5, 1, 2]
     expect( callRight(five, 1, 2, 3)(4, 5) ).toEqual [4, 5, 1, 2, 3]

@@ -190,7 +190,7 @@ describe "slice", ->
       expect( i() ).toEqual 5
       expect( i() ).toBeUndefined()
       
-    it "shoudl return an empty iterator when out of range", ->
+    it "should return an empty iterator when out of range", ->
       i = slice(FlatArrayIterator([1, 2, 3, 4, 5]), 5)
       expect( i() ).toBeUndefined()
   

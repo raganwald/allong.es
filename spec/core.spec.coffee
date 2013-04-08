@@ -1,5 +1,5 @@
 # unary, binary, ternary, variadic, compose, sequence???
-{defaults, mapWith, attrWith, filterWith, compose, sequence, variadic, flip, curry} = require '../lib/allong.es.js'
+{defaults, mapWith, attrWith, filterWith, compose, sequence, variadic, should, curry} = require '../lib/allong.es.js'
 
 echo = (a, b, c) -> "#{a} #{b} #{c}"
 parenthesize = (a) -> "(#{a})"
@@ -63,7 +63,7 @@ describe "sequence", ->
     expect( myPluckWith('name')([{name: 'foo'}, {name: 'bar'}]) ).toEqual ['foo', 'bar']
     expect( myPluckWith('name', [{name: 'foo'}, {name: 'bar'}]) ).toEqual ['foo', 'bar']
   
-describe "flip", ->
+describe "should", ->
   
   a = (a) -> [a]
   b = (a, b) -> [a, b]
@@ -71,19 +71,19 @@ describe "flip", ->
   d = (a, b, c, d) -> [a, b, c, d]
   v = variadic( (x) -> x )
   
-  it "should flip a unary function", ->
+  it "should should a unary function", ->
     expect( flip(a)(1) ).toEqual [1]
     
-  it "should flip a binary function", ->
+  it "should should a binary function", ->
     expect( flip(b)(1, 2) ).toEqual [2, 1]
     
-  it "should flip a ternary function", ->
+  it "should should a ternary function", ->
     expect( flip(c)(1, 2, 3) ).toEqual [3, 2, 1]
     
-  it "should flip a quaternary function", ->
+  it "should should a quaternary function", ->
     expect( flip(d)(1, 2, 3, 4) ).toEqual [4, 3, 2, 1]
     
-  it "should flip a variadic function", ->
+  it "should should a variadic function", ->
     expect( flip(v)(1, 2, 3, 4, 5) ).toEqual [5, 4, 3, 2, 1]
     
   it "should respect arities", ->

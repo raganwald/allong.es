@@ -15,7 +15,7 @@ Core-Core
 compose
 sequence
 curry
-flip
+should
 
 
 Arity

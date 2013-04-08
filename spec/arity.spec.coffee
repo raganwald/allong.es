@@ -1,4 +1,4 @@
-{unvariadic, variadic, curry, selfCurrying} = require '../lib/allong.es'
+{unvariadic, variadic, curry} = require '../lib/allong.es'
 
 numberOfArgs = -> arguments.length
 threeArguments = (a, b, c) -> arguments.length
@@ -50,15 +50,15 @@ describe "curry", ->
     expect( curry(three)(1)(2)(3) ).toEqual [1, 2, 3]
     expect( curry(three)(1, 2)(3) ).toEqual [1, 2, 3]
     
-    describe "self-currying", ->
-      
-      it "shouldn't affect normal useage", ->
-        expect(selfCurrying(three)(4, 5, 6)).toEqual three(4, 5, 6)
-        expect(selfCurrying(three)(4, 5)).toEqual three(4, 5)
-        expect(selfCurrying(three)(4)).toEqual three(4)
-      
-      it "should curry with no arguments", ->
-    expect( selfCurrying(three)()(1)(2, 3) ).toEqual [1, 2, 3]
-    expect( selfCurrying(three)()()(1, 2, 3) ).toEqual [1, 2, 3]
-    expect( selfCurrying(three)()(1)(2)(3) ).toEqual [1, 2, 3]
-    expect( selfCurrying(three)()(1, 2)(3) ).toEqual [1, 2, 3]
+    # describe "self-currying", ->
+    #   
+    #   it "shouldn't affect normal useage", ->
+    #     expect(selfCurrying(three)(4, 5, 6)).toEqual three(4, 5, 6)
+    #     expect(selfCurrying(three)(4, 5)).toEqual three(4, 5)
+    #     expect(selfCurrying(three)(4)).toEqual three(4)
+    #   
+    #   it "should curry with no arguments", ->
+    # expect( selfCurrying(three)()(1)(2, 3) ).toEqual [1, 2, 3]
+    # expect( selfCurrying(three)()()(1, 2, 3) ).toEqual [1, 2, 3]
+    # expect( selfCurrying(three)()(1)(2)(3) ).toEqual [1, 2, 3]
+    # expect( selfCurrying(three)()(1, 2)(3) ).toEqual [1, 2, 3]

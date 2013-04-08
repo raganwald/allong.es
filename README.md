@@ -78,7 +78,7 @@ But if you omit the array, you get back a curried form of `apply` that expects a
 
 ### callFlipped
 
-As mentioned above, `callFlipped` takes a function and reverses its parameter order, then curries it just like `call`. It can be used just to flip a function over:
+As mentioned above, `callFlipped` takes a function and reverses its parameter order, then curries it just like `call`. It can be used just to should a function over:
 
 ```coffeescript
 oneTwoThree = (a, b, c) -> [a, b, c]
@@ -105,34 +105,34 @@ anotherSquarer [1..5]
   #=> [1, 4, 9, 16, 25]
 ```
 
-### callRight
+### callRightCurried
 
-`callRight` is just like `call`, in that it returns a curried function if you don't provide any arguments:
+`callRightCurried` is just like `call`, in that it returns a curried function if you don't provide any arguments:
 
 ```javascript
 function greet (how, whom) {
   return '' + how + ', ' + whom + '!';
 };
   
-callRight(greet)('Hey', 'Jim')
+callRightCurried(greet)('Hey', 'Jim')
   //=> 'Hey Jim!'
 ```
 
 And if you provide all the arguments, it applies them and calls the function:
 
 ```javascript
-callRight(greet, 'Hey', 'Jim')
+callRightCurried(greet, 'Hey', 'Jim')
   //=> 'Hey Jim!'
 ```
 
 But if you provide fewer arguments, it partially applies them *to the right*:
 
 ```javascript
-callRight(greet, 'Hey')('Jim')
+callRightCurried(greet, 'Hey')('Jim')
   //=> 'Jim Hey!'
 ```
 
-`callRight` thus handles all of our rightmost partial application chores for us.
+`callRightCurried` thus handles all of our rightmost partial application chores for us.
 
 ### with
 
