@@ -80,7 +80,7 @@ callFlipped(greet)('Hello')('Tom')
 
 `callFirst` and `callLast` are just like `callLeft` and `callRight`, but they are *binary* functions: They accept a function and exactly one argument. This is sometimes useful when combining functions together.
 
-`callFirst` and `callLast` both have "flipped and curried" versions (`callThisFirst` and `callThisLast`). `callThisLast` is especially useful for working with functions written in "collection - operation" style. Here we take advantage of the fact that they are "automatically curried" to implement the popular `pluck` function.
+`callFirst` and `callLast` both have "flipped and curried" versions (`callFirstWith` and `callLastWith`). `callLastWith` is especially useful for working with functions written in "collection - operation" style. Here we take advantage of the fact that they are "automatically curried" to implement the popular `pluck` function.
 
 ### currying
 
@@ -99,7 +99,7 @@ However, reversing and currying these functions is super-useful as it makes comp
 ```
 map(list, function)        => mapWith(function, list)
 filter(list, function)     => filterWith(function, list)
-attr(object, propertyName) => attrWith(object, propertyName)
+get(object, propertyName) => getWith(object, propertyName)
 pluck(list, propertyName)  => pluckWith(propertyName, list)
 ```
 
@@ -109,7 +109,7 @@ So you "map" a list, but "mapWith" a function. And of course, they are all curri
 map(list)(function)        => mapWith(function)(list)
 deepMap(list)(function)    => deepMapWith(function)(list)
 filter(list)(function)     => filterWith(function)(list)
-attr(object)(propertyName) => attrWith(object)(propertyName)
+get(object)(propertyName) => getWith(object)(propertyName)
 pluck(list)(propertyName)  => pluckWith(propertyName)(list)
 ```
 
@@ -175,7 +175,7 @@ fn(1,2,3)
 
 ### variadic, part ii
 
-When given just the function, `variadic` returns a function with an arity of zero. This is consistent with JavaScript programming practice. There are times when you wish to report an arity, meaning that you want the returned function to have its `length` attribute set.
+When given just the function, `variadic` returns a function with an arity of zero. This is consistent with JavaScript programming practice. There are times when you wish to report an arity, meaning that you want the returned function to have its `length` getibute set.
 
 You do this by prefacing the function argument with a length:
 
@@ -224,12 +224,12 @@ bound(fn, args...)(obj)
   //=> fn.bind(obj, args...)
 ```
 
-### attrWith
+### getWith
 
 ```javascript
-var attrWith = require('allong.es').attrWith;
+var getWith = require('allong.es').getWith;
     
-array.map(attrWith('property'))
+array.map(getWith('property'))
   //=> array.map(function (element) {
   //               return element['property']
   //             })

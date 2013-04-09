@@ -1,5 +1,5 @@
 # unary, binary, ternary, variadic, compose, sequence???
-{defaults, mapWith, attrWith, filterWith, compose, sequence, variadic, should, curry} = require '../lib/allong.es.js'
+{defaults, mapWith, getWith, filterWith, compose, sequence, variadic, should, curry} = require '../lib/allong.es.js'
 
 echo = (a, b, c) -> "#{a} #{b} #{c}"
 parenthesize = (a) -> "(#{a})"
@@ -45,7 +45,7 @@ describe "compose", ->
     expect( compose(echo, parenthesize).length ).toEqual 3
     
   it "should handle a common use case, pluckWith", ->
-    myPluckWith = compose mapWith, attrWith
+    myPluckWith = compose mapWith, getWith
     expect( myPluckWith('name')([{name: 'foo'}, {name: 'bar'}]) ).toEqual ['foo', 'bar']
     expect( myPluckWith('name', [{name: 'foo'}, {name: 'bar'}]) ).toEqual ['foo', 'bar']
 
@@ -59,7 +59,7 @@ describe "sequence", ->
     expect( sequence(parenthesize, echo).length ).toEqual 3
     
   it "should handle a common use case, pluckWith", ->
-    myPluckWith = sequence attrWith, mapWith
+    myPluckWith = sequence getWith, mapWith
     expect( myPluckWith('name')([{name: 'foo'}, {name: 'bar'}]) ).toEqual ['foo', 'bar']
     expect( myPluckWith('name', [{name: 'foo'}, {name: 'bar'}]) ).toEqual ['foo', 'bar']
   

@@ -1,7 +1,7 @@
-{ callRight, applyNow, callNow, applyThisNow, 
-  call, applyLeftNow, callLeftNow, args, applyThisLeftNow,
-  applyRightNow, callRightNow, applyThisRightNow,
-  callFirst, callThisFirst, callLast, callThisLast
+{ callRight, applyNow, callNow, applyN, 
+  call, applyLeftNow, callLeftNow, args, applyLeftNowWith,
+  applyRightNow, callRightNow, applyRightNowWith,
+  callFirst, callFirstWith, callLast, callLastWith
 } = require '../lib/allong.es.js'
 
 echo = (a, b, c) -> "#{a} #{b} #{c}"
@@ -27,10 +27,10 @@ describe "applyNow", ->
   describe "when flipped", ->
     
     it "should apply an array of arguments to a function", ->
-      expect( applyThisNow([1, 2, 3], three) ).toEqual three(1, 2, 3)
+      expect( applyN([1, 2, 3], three) ).toEqual three(1, 2, 3)
 
     it "should be curried", ->
-      expect( applyThisNow([1, 2, 3])(three) ).toEqual three(1, 2, 3)
+      expect( applyN([1, 2, 3])(three) ).toEqual three(1, 2, 3)
 
 describe "callNow", ->
   
@@ -61,14 +61,14 @@ describe "applyLeftNow", ->
   describe "when flipped", ->
   
     it 'should apply all the arguments if possible', ->
-      expect( applyThisLeftNow([1, 2, 3], three) ).toEqual three(1, 2, 3)
+      expect( applyLeftNowWith([1, 2, 3], three) ).toEqual three(1, 2, 3)
     
     it 'should not be full application', ->
-      expect( applyThisLeftNow([1, 2], three) ).not.toEqual three(1, 2)
-      expect( applyThisLeftNow([1, 2], three)(3) ).toEqual three(1, 2, 3)
+      expect( applyLeftNowWith([1, 2], three) ).not.toEqual three(1, 2)
+      expect( applyLeftNowWith([1, 2], three)(3) ).toEqual three(1, 2, 3)
     
     it 'should not be fully curried', ->
-      expect( applyThisLeftNow([1], three)(2) ).toEqual three(1, 2)
+      expect( applyLeftNowWith([1], three)(2) ).toEqual three(1, 2)
     
 describe "callLeftNow", ->
   
@@ -97,14 +97,14 @@ describe "applyRightNow", ->
   describe "when flipped", ->
   
     it 'should apply all the arguments if possible', ->
-      expect( applyThisRightNow([1, 2, 3], three) ).toEqual three(1, 2, 3)
+      expect( applyRightNowWith([1, 2, 3], three) ).toEqual three(1, 2, 3)
     
     it 'should not be full application', ->
-      expect( applyThisRightNow([1, 2], three) ).not.toEqual three(1, 2)
-      expect( applyThisRightNow([1, 2], three)(3) ).toEqual three(3, 1, 2)
+      expect( applyRightNowWith([1, 2], three) ).not.toEqual three(1, 2)
+      expect( applyRightNowWith([1, 2], three)(3) ).toEqual three(3, 1, 2)
     
     it 'should not be fully curried', ->
-      expect( applyThisRightNow([1], three)(2) ).toEqual three(2, 1)
+      expect( applyRightNowWith([1], three)(2) ).toEqual three(2, 1)
     
 describe "callRightNow", ->
   
@@ -166,17 +166,17 @@ describe 'callFirst', ->
   it 'should be curried', ->
     expect( callFirst(three)(1)(2, 3) ).toEqual [1..3]
     
-describe 'callThisFirst', ->
+describe 'callFirstWith', ->
   
   it 'should call with the first argument', ->
-    expect( callThisFirst(1, three)(2, 3) ).toEqual [1..3]
+    expect( callFirstWith(1, three)(2, 3) ).toEqual [1..3]
     
   it 'should get the arity right', ->
-    expect( callThisFirst.length ).toEqual 2
-    expect( callThisFirst(1, three).length ).toEqual 2
+    expect( callFirstWith.length ).toEqual 2
+    expect( callFirstWith(1, three).length ).toEqual 2
     
   it 'should be curried', ->
-    expect( callThisFirst(1)(three)(2, 3) ).toEqual [1..3]
+    expect( callFirstWith(1)(three)(2, 3) ).toEqual [1..3]
     
 describe "args", ->
   
