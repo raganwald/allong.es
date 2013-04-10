@@ -96,7 +96,7 @@ However, reversing and currying these functions is super-useful as it makes comp
 ```
 map(list, function)       <=> mapWith(function, list)
 filter(list, function)    <=> filterWith(function, list)
-get(object, propertyName) <=> getWith(object, propertyName)
+get(object, propertyName) <=> getWith(propertyName, object)
 pluck(list, propertyName) <=> pluckWith(propertyName, list)
 ```
 
@@ -106,7 +106,7 @@ So you "map" a list, but "mapWith" a function. And of course, they are all curri
 map(list)(function)       <=> mapWith(function)(list)
 deepMap(list)(function)   <=> deepMapWith(function)(list)
 filter(list)(function)    <=> filterWith(function)(list)
-get(object)(propertyName) <=> getWith(object)(propertyName)
+get(object)(propertyName) <=> getWith(propertyName)(object)
 pluck(list)(propertyName) <=> pluckWith(propertyName)(list)
 ```
 
