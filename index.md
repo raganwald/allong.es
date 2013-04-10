@@ -9,9 +9,9 @@ title: about
 
 <iframe style="float:right;margin-left:20px;margin-bottom:20px;margin-top:20px" width="160" height="400" src="https://leanpub.com/javascript-allonge/embed" frameborder="0" allowtransparency="true"></iframe>
 
-In node: npm install allong.es
+In node: "npm install allong.es"
 
-In the browser: [http://allong.es/play](/play)
+In your browser: [http://allong.es/play](/play)
 
 ### Documentation
 
