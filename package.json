@@ -2,7 +2,7 @@
   "author": "Reg Braithwaite <raganwald@gmail.com> (http://braythwayt.com)",
   "name": "allong.es",
   "description": "Combinators and Function Decorators",
-  "version": "0.9.1",
+  "version": "0.10.0",
   "homepage": "http://allong.es",
   "repository": {
     "type": "git",
@@ -15,10 +15,11 @@
   "engines": {
     "node": ""
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "jasmine-node": "",
-    "coffee-script": ""
+    "coffee-script": "",
+    "grunt": "~0.4.1",
+    "grunt-contrib-uglify": "~0.2.0"
   }
 }

@@ -1,6 +1,6 @@
 {iterators: {slice, drop, take, accumulate, accumulateWithReturn, 
              fold, map, filter, FlatArrayIterator, RecursiveArrayIterator,
-             unfold, unfoldWithReturn}} = require '../lib/allong.es.js'
+             unfold, unfoldWithReturn}} = require('../lib/allong.es.min.js').allong.es
 
 describe "FlatArrayIterator", ->
   

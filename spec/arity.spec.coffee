@@ -1,4 +1,4 @@
-{unvariadic, variadic, curry} = require '../lib/allong.es'
+{unvariadic, variadic, curry} = require('../lib/allong.es.min.js').allong.es
 
 numberOfArgs = -> arguments.length
 threeArguments = (a, b, c) -> arguments.length

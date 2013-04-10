@@ -1,8 +1,8 @@
-{ callRight, applyNow, callNow, applyN, 
+{ callRight, applyNow, callNow, applyNowFlipped, 
   call, applyLeftNow, callLeftNow, args, applyLeftNowWith,
   applyRightNow, callRightNow, applyRightNowWith,
   callFirst, callFirstWith, callLast, callLastWith
-} = require '../lib/allong.es.js'
+} = require('../lib/allong.es.min.js').allong.es
 
 echo = (a, b, c) -> "#{a} #{b} #{c}"
 
@@ -27,10 +27,10 @@ describe "applyNow", ->
   describe "when flipped", ->
     
     it "should apply an array of arguments to a function", ->
-      expect( applyN([1, 2, 3], three) ).toEqual three(1, 2, 3)
+      expect( applyNowFlipped([1, 2, 3], three) ).toEqual three(1, 2, 3)
 
     it "should be curried", ->
-      expect( applyN([1, 2, 3])(three) ).toEqual three(1, 2, 3)
+      expect( applyNowFlipped([1, 2, 3])(three) ).toEqual three(1, 2, 3)
 
 describe "callNow", ->
   

@@ -1,4 +1,4 @@
-{mapWith, deepMapWith} = require '../lib/allong.es.js'
+{mapWith, deepMapWith} = require('../lib/allong.es.min.js').allong.es
 
 square = (n) -> n * n
 
