@@ -1,0 +1,25 @@
+{
+  "author": "Reg Braithwaite <raganwald@gmail.com> (http://braythwayt.com)",
+  "name": "allong.es",
+  "description": "Combinators and Function Decorators",
+  "version": "0.10.0",
+  "homepage": "http://allong.es",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/raganwald/allong.es.git"
+  },
+  "main": "lib/allong.es.js",
+  "scripts": {
+    "test": "jasmine-node --coffee --verbose spec"
+  },
+  "engines": {
+    "node": ""
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "jasmine-node": "",
+    "coffee-script": "",
+    "grunt": "~0.4.1",
+    "grunt-contrib-uglify": "~0.2.0"
+  }
+}
