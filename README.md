@@ -56,9 +56,6 @@ callRight(greet, 'Hello', 'Tom')
   
 callRight(greet, 'Hello')('Tom')
   //=> 'Tom, Hello!'
-  
-callFlipped(greet)('Hello')('Tom')
-  //=> 'Hello, Tom!'
 ```
 
 `callFlipped` applies the arguments backwards, even when curried:
@@ -97,20 +94,20 @@ var curry = unary(call);
 However, reversing and currying these functions is super-useful as it makes composeable functions out of them. That's why `callFlipped` is so important. But to save you the trouble of writing `callFlipped map` everywhere, many such functions in `allong.es` have a clipped version pre-defined and named with the suffix `With`:
 
 ```
-map(list, function)        => mapWith(function, list)
-filter(list, function)     => filterWith(function, list)
-get(object, propertyName) => getWith(object, propertyName)
-pluck(list, propertyName)  => pluckWith(propertyName, list)
+map(list, function)       <=> mapWith(function, list)
+filter(list, function)    <=> filterWith(function, list)
+get(object, propertyName) <=> getWith(object, propertyName)
+pluck(list, propertyName) <=> pluckWith(propertyName, list)
 ```
 
 So you "map" a list, but "mapWith" a function. And of course, they are all curried. For example:
 
 ```
-map(list)(function)        => mapWith(function)(list)
-deepMap(list)(function)    => deepMapWith(function)(list)
-filter(list)(function)     => filterWith(function)(list)
-get(object)(propertyName) => getWith(object)(propertyName)
-pluck(list)(propertyName)  => pluckWith(propertyName)(list)
+map(list)(function)       <=> mapWith(function)(list)
+deepMap(list)(function)   <=> deepMapWith(function)(list)
+filter(list)(function)    <=> filterWith(function)(list)
+get(object)(propertyName) <=> getWith(object)(propertyName)
+pluck(list)(propertyName) <=> pluckWith(propertyName)(list)
 ```
 
 Thus if you have a collection such as:
@@ -154,7 +151,7 @@ namesOf(users)
 Makes a function into a variadic (accepts any number of arguments). The last named parameter will be given an array of arguments.
 
 ```javascript
-var variadic = require('allong.es').variadic;
+var variadic = require('allong.es').allong.es.variadic;
 
 var fn = variadic(function (a) { return a })
 
@@ -218,7 +215,7 @@ Use `unary(parseInt)` to solve the problem:
 ### bound
 
 ```javascript
-var bound = require('allong.es').bound;
+var bound = require('allong.es').allong.es.bound;
     
 bound(fn, args...)(obj)
   //=> fn.bind(obj, args...)
@@ -227,7 +224,7 @@ bound(fn, args...)(obj)
 ### getWith
 
 ```javascript
-var getWith = require('allong.es').getWith;
+var getWith = require('allong.es').allong.es.getWith;
     
 array.map(getWith('property'))
   //=> array.map(function (element) {
@@ -238,8 +235,8 @@ array.map(getWith('property'))
 ## Functional Composition
 
 ```javascript
-var compose = require('allong.es').compose,
-    sequence = require('allong.es').sequence;
+var compose = require('allong.es').allong.es.compose,
+    sequence = require('allong.es').allong.es.sequence;
     
 compose(a, b, c)
   //=> function (x) {
@@ -257,8 +254,8 @@ sequence(a, b, c)
 ### mapWith and deepMapWith
 
 ```javascript
-var mapWith = require('allong.es').mapWith,
-    deepMapWith = require('allong.es').deepMapWith;
+var mapWith = require('allong.es').allong.es.mapWith,
+    deepMapWith = require('allong.es').allong.es.deepMapWith;
     
 var squareList = mapWith(function (x) { return x * x })
 
@@ -276,7 +273,7 @@ squareTree([1, 2, [3, 4]])
 ### maybe
 
 ```javascript
-var maybe = require('allong.es').maybe;
+var maybe = require('allong.es').allong.es.maybe;
     
 var safeFirst = maybe(function (arr) { return arr[0] })
 
@@ -289,7 +286,7 @@ safeFirst(null)
 ### tap
 
 ```javascript
-var tap = require('allong.es').tap;
+var tap = require('allong.es').allong.es.tap;
     
 tap([1, 2, 3, 4, 5], send('pop'))
   //=> [1, 2, 3, 4]
@@ -298,7 +295,7 @@ tap([1, 2, 3, 4, 5], send('pop'))
 ### fluent
 
 ```javascript
-var fluent = require('allong.es').fluent;
+var fluent = require('allong.es').allong.es.fluent;
     
 Role = function () {}
 
@@ -315,7 +312,7 @@ var doomed = new Role()
 ### once
 
 ```javascript
-var once = require('allong.es').once;
+var once = require('allong.es').allong.es.once;
     
 var message = once( function () { console.log("Hello, it's me") })
 
@@ -332,8 +329,8 @@ message()
 ## Decorating Classes/Constructors
 
 ```javascript
-var mixin = require('allong.es').mixin,
-    classDecorator = require('allong.es').classDecorator;
+var mixin = require('allong.es').allong.es.mixin,
+    classDecorator = require('allong.es').allong.es.classDecorator;
     
 function Todo (name) {
   var self = this instanceof Todo
@@ -392,7 +389,7 @@ Functional iterators are stateful functions that "iterate over" the values in so
 The functional iterators utilities are all namespaced:
 
 ```javascript
-var iterators = require('allong.es').iterators;
+var iterators = require('allong.es').allong.es.iterators;
 ```
 
 ### FlatArrayIterator and RecursiveArrayIterator
@@ -833,8 +830,8 @@ numbers();
 ## Trampolining
 
 ```
-var trampoline = require('allong.es').trampoline,
-    tailCall = require('allong.es').tailCall;
+var trampoline = require('allong.es').allong.es.trampoline,
+    tailCall = require('allong.es').allong.es.tailCall;
     
 function factorial (n) {
   var _factorial = trampoline( function myself (acc, n) {
