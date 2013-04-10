@@ -1,0 +1,6 @@
+pygments: true
+lsi: false
+safe: false
+markdown: kramdown
+exclude: config.rb, README.md
+permalink: /:year/:month/:day/:title.html
