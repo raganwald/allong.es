@@ -11,7 +11,7 @@ title: about
 
 In node: "npm install allong.es"
 
-In your browser: [http://allong.es/play](/play)
+In your browser: [http://allong.es/try](/try)
 
 ### Documentation
 
