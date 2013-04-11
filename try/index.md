@@ -10,7 +10,7 @@ The code samples on this page are all editable and can be evaluated by pressing 
 You can produce output with `console.log`, `alert`, or by inserting a comment that looks like this:
 
 {% highlight javascript %}
-2 + 2
+2 + 2;
   //=>
 {% endhighlight %}
 
