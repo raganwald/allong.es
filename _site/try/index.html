@@ -441,6 +441,7 @@
 <h2 id="decorating-classesconstructors">Decorating Classes/Constructors</h2>
 
 <div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">mixin</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">mixin</span><span class="p">,</span>
+    <span class="nx">fluent</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">fluent</span>
     <span class="nx">classDecorator</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">classDecorator</span><span class="p">;</span>
     
 <span class="kd">function</span> <span class="nx">Todo</span> <span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
@@ -471,8 +472,6 @@
 
 <span class="k">new</span> <span class="nx">Todo</span><span class="p">(</span><span class="s2">&quot;Vacuum&quot;</span><span class="p">).</span><span class="nx">setLocation</span><span class="p">(</span><span class="s1">&#39;Home&#39;</span><span class="p">);</span>
   <span class="c1">//=&gt;</span>
-  <span class="c1">//     done: false,</span>
-  <span class="c1">//     location: &#39;Home&#39; }</span>
 
 <span class="kd">var</span> <span class="nx">AndColourCoded</span> <span class="o">=</span> <span class="nx">classDecorator</span><span class="p">({</span>
   <span class="nx">setColourRGB</span><span class="o">:</span> <span class="nx">fluent</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">r</span><span class="p">,</span> <span class="nx">g</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
@@ -487,8 +486,6 @@
 
 <span class="k">new</span> <span class="nx">ColourTodo</span><span class="p">(</span><span class="s1">&#39;Use More Decorators&#39;</span><span class="p">).</span><span class="nx">setColourRGB</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
   <span class="c1">//=&gt;</span>
-  <span class="c1">//     done: false,</span>
-  <span class="c1">//     colourCode: { r: 0, g: 255, b: 0 } }</span>
 </code></pre></div>
 
 <p>Note: <code>classDecorator</code> works with JavaScript constructors that have a default implementation (they work properly with no arguments), and are new-agnostic (they can be called with new or as a normal function). <code>Todo</code> above has both properties.</p>
@@ -506,7 +503,8 @@
 
 <p>Making functional iterators from arrays:</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">FlatArrayIterator</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">FlatArrayIterator</span><span class="p">,</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">iterators</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">iterators</span><span class="p">,</span>
+    <span class="nx">FlatArrayIterator</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">FlatArrayIterator</span><span class="p">,</span>
     <span class="nx">RecursiveArrayIterator</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">RecursiveArrayIterator</span><span class="p">;</span>
     
 <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">FlatArrayIterator</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]);</span>
@@ -553,7 +551,8 @@
 
 <h3 id="range-and-numbers">range and numbers</h3>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">range</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">range</span><span class="p">,</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">iterators</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">iterators</span><span class="p">,</span>
+    <span class="nx">range</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">range</span><span class="p">,</span>
     <span class="nx">numbers</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">numbers</span><span class="p">;</span>
 
 <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
@@ -634,7 +633,8 @@
 
 <p>Unfold makes an iterator out of a seed by successively applying a function to the seed value. Here’s an example duplicating the “numbers” feature:</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">unfold</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">unfold</span><span class="p">,</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">iterators</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">iterators</span><span class="p">,</span>
+    <span class="nx">unfold</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">unfold</span><span class="p">,</span>
     <span class="nx">unfoldWithReturn</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">unfoldWithReturn</span><span class="p">;</span>
     
 <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">unfold</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span> <span class="p">});</span>
@@ -662,7 +662,10 @@
 
 <p>A richer example of <code>unfoldWithReturn</code>:</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">cards</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="s1">&#39;10&#39;</span><span class="p">,</span> <span class="s1">&#39;J&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">];</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">iterators</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">iterators</span><span class="p">,</span>
+    <span class="nx">unfoldWithReturn</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">unfoldWithReturn</span><span class="p">;</span>
+    
+<span class="kd">var</span> <span class="nx">cards</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="s1">&#39;10&#39;</span><span class="p">,</span> <span class="s1">&#39;J&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">];</span>
 
 <span class="kd">function</span> <span class="nx">pickCard</span> <span class="p">(</span><span class="nx">deck</span><span class="p">)</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">position</span><span class="p">;</span>
@@ -697,9 +700,11 @@
 
 <p>Stateless mapping of an iterator to another iterator:</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">map</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">map</span><span class="p">;</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">iterators</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">iterators</span><span class="p">,</span>
+    <span class="nx">map</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">map</span><span class="p">,</span>
+    <span class="nx">numbers</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">numbers</span><span class="p">;</span>
     
-<span class="kd">var</span> <span class="nx">squares</span> <span class="o">=</span> <span class="nx">map</span><span class="p">(</span><span class="nx">numbers</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">n</span> <span class="o">*</span> <span class="nx">n</span><span class="p">;</span> <span class="p">});</span>
+<span class="kd">var</span> <span class="nx">squares</span> <span class="o">=</span> <span class="nx">map</span><span class="p">(</span><span class="nx">numbers</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">n</span> <span class="o">*</span> <span class="nx">n</span><span class="p">;</span> <span class="p">});</span>
 
 <span class="nx">squares</span><span class="p">();</span>
   <span class="c1">//=&gt;</span>
@@ -714,9 +719,11 @@
 
 <p>Accumulating an iterator to another iterator, a/k/a stateful mapping, with an optional seed:</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">accumulate</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">accumulate</span><span class="p">;</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">iterators</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">iterators</span><span class="p">,</span>
+    <span class="nx">accumulate</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">accumulate</span><span class="p">,</span>
+    <span class="nx">numbers</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">numbers</span><span class="p">;</span>
     
-<span class="kd">var</span> <span class="nx">runningTotal</span> <span class="o">=</span> <span class="nx">accumulate</span><span class="p">(</span><span class="nx">numbers</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">accumulation</span><span class="p">,</span> <span class="nx">n</span><span class="p">)</span> <span class="p">{</span> 
+<span class="kd">var</span> <span class="nx">runningTotal</span> <span class="o">=</span> <span class="nx">accumulate</span><span class="p">(</span><span class="nx">numbers</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">accumulation</span><span class="p">,</span> <span class="nx">n</span><span class="p">)</span> <span class="p">{</span> 
       <span class="k">return</span> <span class="nx">accumulation</span> <span class="o">+</span> <span class="nx">n</span><span class="p">;</span> 
     <span class="p">});</span>
 
@@ -732,7 +739,7 @@
   <span class="c1">//=&gt;</span>
 <span class="c1">// ...</span>
 
-<span class="kd">var</span> <span class="nx">runningTotal</span> <span class="o">=</span> <span class="nx">accumulate</span><span class="p">(</span><span class="nx">numbers</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">accumulation</span><span class="p">,</span> <span class="nx">n</span><span class="p">)</span> <span class="p">{</span> 
+<span class="kd">var</span> <span class="nx">runningTotal</span> <span class="o">=</span> <span class="nx">accumulate</span><span class="p">(</span><span class="nx">numbers</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">accumulation</span><span class="p">,</span> <span class="nx">n</span><span class="p">)</span> <span class="p">{</span> 
       <span class="k">return</span> <span class="nx">accumulation</span> <span class="o">+</span> <span class="nx">n</span><span class="p">;</span> 
     <span class="p">},</span> <span class="mi">5</span><span class="p">);</span>
 
@@ -753,7 +760,8 @@
 
 <p>This code transforms filters duplicates out of an iterator of numbers by turning them into “false.” It consumes space proportional to the time it runs and the size of the set of possible numbers in its iterator.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">accumulateWithReturn</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">accumulateWithReturn</span><span class="p">;</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">iterators</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">iterators</span><span class="p">,</span>
+    <span class="nx">accumulateWithReturn</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">accumulateWithReturn</span><span class="p">;</span>
     
 <span class="kd">var</span> <span class="nx">randomNumbers</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
   <span class="k">return</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">10</span><span class="p">);</span>
@@ -802,11 +810,16 @@
 
 <h3 id="select-and-reject">select and reject</h3>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">select</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">select</span><span class="p">,</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">iterators</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">iterators</span><span class="p">,</span>
+    <span class="nx">select</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">select</span><span class="p">,</span>
     <span class="nx">reject</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">reject</span><span class="p">;</span>
 
 <span class="kd">function</span> <span class="nx">isEven</span> <span class="p">(</span><span class="nx">number</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">return</span> <span class="nx">number</span> <span class="o">===</span> <span class="mi">0</span> <span class="o">||</span> <span class="o">!</span><span class="nx">isEven</span><span class="p">(</span><span class="nx">number</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+<span class="p">};</span>
+    
+<span class="kd">var</span> <span class="nx">randomNumbers</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">10</span><span class="p">);</span>
 <span class="p">};</span>
 
 <span class="kd">var</span> <span class="nx">evens</span> <span class="o">=</span> <span class="nx">select</span><span class="p">(</span><span class="nx">randomNumbers</span><span class="p">,</span> <span class="nx">isEven</span><span class="p">);</span>
@@ -842,10 +855,11 @@
 
 <h3 id="slice">slice</h3>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">slice</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">slice</span><span class="p">,</span>
-    <span class="nx">numbers</span> <span class="o">=</span> <span class="nx">unfold</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span> <span class="p">});</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">iterators</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">iterators</span><span class="p">,</span>
+    <span class="nx">slice</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">slice</span><span class="p">,</span>
+    <span class="nx">fromOne</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">numbers</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
 
-<span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">slice</span><span class="p">(</span><span class="nx">numbers</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">slice</span><span class="p">(</span><span class="nx">fromOne</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
 
 <span class="nx">i</span><span class="p">();</span>
   <span class="c1">//=&gt;</span>
@@ -854,7 +868,7 @@
 <span class="nx">i</span><span class="p">();</span>
   <span class="c1">//=&gt;</span>
 
-<span class="nx">i</span> <span class="o">=</span> <span class="nx">slice</span><span class="p">(</span><span class="nx">numbers</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+<span class="nx">i</span> <span class="o">=</span> <span class="nx">slice</span><span class="p">(</span><span class="nx">fromOne</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
 
 <span class="nx">i</span><span class="p">();</span>
   <span class="c1">//=&gt;</span>
@@ -866,24 +880,25 @@
 
 <h3 id="take">take</h3>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">take</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">take</span><span class="p">,</span>
-    <span class="nx">numbers</span> <span class="o">=</span> <span class="nx">unfold</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span> <span class="p">});</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">iterators</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">iterators</span><span class="p">,</span>
+    <span class="nx">take</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">take</span><span class="p">,</span>
+    <span class="nx">fromOne</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">numbers</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
 
-<span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">take</span><span class="p">(</span><span class="nx">numbers</span><span class="p">);</span>
-
-<span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt;</span>
-<span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt;</span>
-
-<span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">take</span><span class="p">(</span><span class="nx">numbers</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">take</span><span class="p">(</span><span class="nx">fromOne</span><span class="p">);</span>
 
 <span class="nx">i</span><span class="p">();</span>
   <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
   <span class="c1">//=&gt;</span>
 
-<span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">take</span><span class="p">(</span><span class="nx">numbers</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">take</span><span class="p">(</span><span class="nx">fromOne</span><span class="p">);</span>
+
+<span class="nx">i</span><span class="p">();</span>
+  <span class="c1">//=&gt;</span>
+<span class="nx">i</span><span class="p">();</span>
+  <span class="c1">//=&gt;</span>
+
+<span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">take</span><span class="p">(</span><span class="nx">fromOne</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
 
 <span class="nx">i</span><span class="p">();</span>
   <span class="c1">//=&gt;</span>
@@ -898,30 +913,31 @@
 
 <h3 id="drop">drop</h3>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">drop</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">drop</span><span class="p">,</span>
-    <span class="nx">numbers</span> <span class="o">=</span> <span class="nx">unfold</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span> <span class="p">});</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">iterators</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">iterators</span><span class="p">,</span>
+    <span class="nx">drop</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">drop</span><span class="p">,</span>
+    <span class="nx">fromOne</span> <span class="o">=</span> <span class="nx">iterators</span><span class="p">.</span><span class="nx">numbers</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
 
-<span class="nx">drop</span><span class="p">(</span><span class="nx">numbers</span><span class="p">);</span>
+<span class="nx">drop</span><span class="p">(</span><span class="nx">fromOne</span><span class="p">);</span>
 
-<span class="nx">numbers</span><span class="p">();</span>
+<span class="nx">fromOne</span><span class="p">();</span>
   <span class="c1">//=&gt;</span>
-<span class="nx">numbers</span><span class="p">();</span>
+<span class="nx">fromOne</span><span class="p">();</span>
   <span class="c1">//=&gt;</span>
-<span class="nx">numbers</span><span class="p">();</span>
-  <span class="c1">//=&gt;</span>
-
-<span class="nx">drop</span><span class="p">(</span><span class="nx">numbers</span><span class="p">);</span>
-
-<span class="nx">numbers</span><span class="p">();</span>
-  <span class="c1">//=&gt;</span>
-<span class="nx">numbers</span><span class="p">();</span>
+<span class="nx">fromOne</span><span class="p">();</span>
   <span class="c1">//=&gt;</span>
 
-<span class="nx">drop</span><span class="p">(</span><span class="nx">numbers</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+<span class="nx">drop</span><span class="p">(</span><span class="nx">fromOne</span><span class="p">);</span>
 
-<span class="nx">numbers</span><span class="p">();</span>
+<span class="nx">fromOne</span><span class="p">();</span>
   <span class="c1">//=&gt;</span>
-<span class="nx">numbers</span><span class="p">();</span>
+<span class="nx">fromOne</span><span class="p">();</span>
+  <span class="c1">//=&gt;</span>
+
+<span class="nx">drop</span><span class="p">(</span><span class="nx">fromOne</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+
+<span class="nx">fromOne</span><span class="p">();</span>
+  <span class="c1">//=&gt;</span>
+<span class="nx">fromOne</span><span class="p">();</span>
   <span class="c1">//=&gt;</span>
 <span class="c1">// ...</span>
 </code></pre></div>

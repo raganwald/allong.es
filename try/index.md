@@ -414,6 +414,7 @@ message()
 
 {% highlight javascript %}
 var mixin = allong.es.mixin,
+    fluent = allong.es.fluent
     classDecorator = allong.es.classDecorator;
     
 function Todo (name) {
@@ -444,8 +445,6 @@ AddLocation.call(Todo.prototype);
 
 new Todo("Vacuum").setLocation('Home');
   //=>
-  //     done: false,
-  //     location: 'Home' }
 
 var AndColourCoded = classDecorator({
   setColourRGB: fluent( function (r, g, b) {
@@ -460,8 +459,6 @@ var ColourTodo = AndColourCoded(Todo);
 
 new ColourTodo('Use More Decorators').setColourRGB(0, 255, 0);
   //=>
-  //     done: false,
-  //     colourCode: { r: 0, g: 255, b: 0 } }
 {% endhighlight %}
 
 Note: `classDecorator` works with JavaScript constructors that have a default implementation (they work properly with no arguments), and are new-agnostic (they can be called with new or as a normal function). `Todo` above has both properties.
@@ -481,7 +478,8 @@ var iterators = allong.es.iterators;
 Making functional iterators from arrays:
 
 {% highlight javascript %}
-var FlatArrayIterator = iterators.FlatArrayIterator,
+var iterators = allong.es.iterators,
+    FlatArrayIterator = iterators.FlatArrayIterator,
     RecursiveArrayIterator = iterators.RecursiveArrayIterator;
     
 var i = FlatArrayIterator([1, 2, 3, 4, 5]);
@@ -529,7 +527,8 @@ i();
 ### range and numbers
 
 {% highlight javascript %}
-var range = iterators.range,
+var iterators = allong.es.iterators,
+    range = iterators.range,
     numbers = iterators.numbers;
 
 var i = range(1, 5);
@@ -611,7 +610,8 @@ i();
 Unfold makes an iterator out of a seed by successively applying a function to the seed value. Here's an example duplicating the "numbers" feature:
 
 {% highlight javascript %}
-var unfold = iterators.unfold,
+var iterators = allong.es.iterators,
+    unfold = iterators.unfold,
     unfoldWithReturn = iterators.unfoldWithReturn;
     
 var i = unfold(1, function (n) { return n + 1; });
@@ -640,6 +640,9 @@ i();
 A richer example of `unfoldWithReturn`:
 
 {% highlight javascript %}
+var iterators = allong.es.iterators,
+    unfoldWithReturn = iterators.unfoldWithReturn;
+    
 var cards = ['A', 2, 3, 4, 5, 6, 7, 8, 9, '10', 'J', 'Q', 'K'];
 
 function pickCard (deck) {
@@ -676,9 +679,11 @@ i();
 Stateless mapping of an iterator to another iterator:
 
 {% highlight javascript %}
-var map = iterators.map;
+var iterators = allong.es.iterators,
+    map = iterators.map,
+    numbers = iterators.numbers;
     
-var squares = map(numbers, function (n) { return n * n; });
+var squares = map(numbers(1), function (n) { return n * n; });
 
 squares();
   //=>
@@ -694,9 +699,11 @@ squares();
 Accumulating an iterator to another iterator, a/k/a stateful mapping, with an optional seed:
 
 {% highlight javascript %}
-var accumulate = iterators.accumulate;
+var iterators = allong.es.iterators,
+    accumulate = iterators.accumulate,
+    numbers = iterators.numbers;
     
-var runningTotal = accumulate(numbers, function (accumulation, n) { 
+var runningTotal = accumulate(numbers(1), function (accumulation, n) { 
       return accumulation + n; 
     });
 
@@ -712,7 +719,7 @@ runningTotal();
   //=>
 // ...
 
-var runningTotal = accumulate(numbers, function (accumulation, n) { 
+var runningTotal = accumulate(numbers(1), function (accumulation, n) { 
       return accumulation + n; 
     }, 5);
 
@@ -734,7 +741,8 @@ runningTotal();
 This code transforms filters duplicates out of an iterator of numbers by turning them into "false." It consumes space proportional to the time it runs and the size of the set of possible numbers in its iterator.
 
 {% highlight javascript %}
-var accumulateWithReturn = iterators.accumulateWithReturn;
+var iterators = allong.es.iterators,
+    accumulateWithReturn = iterators.accumulateWithReturn;
     
 var randomNumbers = function () {
   return Math.floor(Math.random() * 10);
@@ -784,11 +792,16 @@ uniques();
 ### select and reject
 
 {% highlight javascript %}
-var select = iterators.select,
+var iterators = allong.es.iterators,
+    select = iterators.select,
     reject = iterators.reject;
 
 function isEven (number) {
   return number === 0 || !isEven(number - 1);
+};
+    
+var randomNumbers = function () {
+  return Math.floor(Math.random() * 10);
 };
 
 var evens = select(randomNumbers, isEven);
@@ -825,10 +838,11 @@ Note: `select` and `reject` will enter an "infinite loop" if the iterator does n
 ### slice
 
 {% highlight javascript %}
-var slice = iterators.slice,
-    numbers = unfold(1, function (n) { return n + 1; });
+var iterators = allong.es.iterators,
+    slice = iterators.slice,
+    fromOne = iterators.numbers(1);
 
-var i = slice(numbers, 3);
+var i = slice(fromOne, 3);
 
 i();
   //=>
@@ -837,7 +851,7 @@ i();
 i();
   //=>
 
-i = slice(numbers, 3, 2);
+i = slice(fromOne, 3, 2);
 
 i();
   //=>
@@ -850,24 +864,25 @@ i();
 ### take
 
 {% highlight javascript %}
-var take = iterators.take,
-    numbers = unfold(1, function (n) { return n + 1; });
+var iterators = allong.es.iterators,
+    take = iterators.take,
+    fromOne = iterators.numbers(1);
 
-var i = take(numbers);
-
-i();
-  //=>
-i();
-  //=>
-
-var i = take(numbers);
+var i = take(fromOne);
 
 i();
   //=>
 i();
   //=>
 
-var i = take(numbers, 3);
+var i = take(fromOne);
+
+i();
+  //=>
+i();
+  //=>
+
+var i = take(fromOne, 3);
 
 i();
   //=>
@@ -883,30 +898,31 @@ i();
 ### drop
 
 {% highlight javascript %}
-var drop = iterators.drop,
-    numbers = unfold(1, function (n) { return n + 1; });
+var iterators = allong.es.iterators,
+    drop = iterators.drop,
+    fromOne = iterators.numbers(1);
 
-drop(numbers);
+drop(fromOne);
 
-numbers();
+fromOne();
   //=>
-numbers();
+fromOne();
   //=>
-numbers();
-  //=>
-
-drop(numbers);
-
-numbers();
-  //=>
-numbers();
+fromOne();
   //=>
 
-drop(numbers, 3);
+drop(fromOne);
 
-numbers();
+fromOne();
   //=>
-numbers();
+fromOne();
+  //=>
+
+drop(fromOne, 3);
+
+fromOne();
+  //=>
+fromOne();
   //=>
 // ...
 {% endhighlight %}
