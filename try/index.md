@@ -12,7 +12,7 @@ You can produce output with `console.log`, `alert`, or by inserting a comment th
 {% highlight javascript %}
 2 + 2
   //=>
-{% highlight %}
+{% endhighlight %}
 
 (note: This page is a work in progress, some of the examples may not be fully operational yet).
 
