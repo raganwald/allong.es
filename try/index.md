@@ -3,7 +3,18 @@ layout: default
 title: try allong.es
 ---
 
-*The code samples on this page are all editable and can be evaluated by pressing command-enter. Try playing with them! (note: This page is a work in progress, some of the examples may not be fully operational yet).*
+### about this page
+
+The code samples on this page are all editable and can be evaluated by pressing command-enter. Try playing with them. Each block of code is its own little environment, with the variable `allong.es` pre-defined as the `allong.es` library.
+
+You can produce output with `console.log`, `alert`, or by inserting a comment that looks like this:
+
+{% highlight javascript %}
+2 + 2
+  //=>
+{% highlight %}
+
+(note: This page is a work in progress, some of the examples may not be fully operational yet).
 
 ---
 
