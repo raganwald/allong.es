@@ -1,4 +1,4 @@
-{classDecorator, mixin, fluent} = require('../lib/allong.es.min.js').allong.es
+{classDecorator, mixin, fluent} = require('../lib/allong.es.js').allong.es
 
 class Todo
   constructor: (name) ->

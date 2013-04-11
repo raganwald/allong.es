@@ -1,4 +1,4 @@
-{trampoline, tailCall} = require('../lib/allong.es.min.js').allong.es
+{trampoline, tailCall} = require('../lib/allong.es.js').allong.es
 
 describe "trampolining", ->
 

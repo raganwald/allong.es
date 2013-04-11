@@ -1,8 +1,8 @@
 { callRight, applyNow, callNow, applyNowFlipped, 
   call, applyLeftNow, callLeftNow, args, applyLeftNowWith,
   applyRightNow, callRightNow, applyRightNowWith,
-  callFirst, callFirstWith, callLast, callLastWith
-} = require('../lib/allong.es.min.js').allong.es
+  callFirst, callFirstWith, callLast, callLastWith, apply
+} = require('../lib/allong.es.js').allong.es
 
 echo = (a, b, c) -> "#{a} #{b} #{c}"
 
@@ -11,6 +11,17 @@ three = (a, b, c) -> [a, b, c]
 twelve = (a, b, c, d, e, f, g, h, i, j, k, l) ->
 vari = (args...) -> args
 one = (x) -> x
+
+describe "apply", ->
+  
+  it "should apply an array of arguments to a function", ->
+    expect( apply(three, [1, 2, 3]) ).toEqual three(1, 2, 3)
+    
+  it "should be curried", ->
+    expect( apply(three)([1, 2, 3]) ).toEqual three(1, 2, 3)
+    
+  it "should  be self-currying, it should apply what it gets", ->
+    expect( apply(three, [1, 2])(3) ).toEqual three(1, 2, 3)
 
 describe "applyNow", ->
   

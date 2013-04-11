@@ -1,5 +1,5 @@
 # unary, binary, ternary, variadic, compose, sequence???
-{defaults, mapWith, getWith, filterWith, compose, sequence, variadic, flip, curry} = require('../lib/allong.es.min.js').allong.es
+{defaults, mapWith, getWith, filterWith, compose, sequence, variadic, flip, curry} = require('../lib/allong.es.js').allong.es
 
 echo = (a, b, c) -> "#{a} #{b} #{c}"
 parenthesize = (a) -> "(#{a})"
