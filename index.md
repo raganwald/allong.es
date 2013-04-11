@@ -15,7 +15,7 @@ In your browser: [http://allong.es/try](/try)
 
 ### Documentation
 
-The decorators and combinators are documented in <a href="http://leanpub.com/javascript-allonge">JavaScript Allongé</a>. There's also a cheat sheet on the <a href="https://github.com/raganwald/allong.es/blob/master/README.md">README</a>. Some of them have also been described in essays published online. Copies of those essays are included in the project's <a href="https://github.com/raganwald/allong.es/tree/master/essays">essays</a> folder.
+The decorators and combinators are documented in <a href="http://leanpub.com/javascript-allonge">JavaScript Allongé</a>, and the <a href="/try/">try in your browser</a> contains lots of examples to play with.
 
 ### Project Status
 

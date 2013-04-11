@@ -1,10 +1,12 @@
-var editor;
+;$(function() {
+  var editor;
     
-for (var property in allong.es) {
-  window[property] = allong.es[property];
-}
-    
-$(function() {
+  // for (var property in allong.es) {
+  //   if (window[property] == null) {
+  //     window[property] = allong.es[property];
+  //   }
+  // }
+
   $('pre').each(function (index, element) {
     element = $(element);
     
@@ -35,6 +37,8 @@ $(function() {
       readOnly: true // false if this command should not apply in readOnly mode
     });
     
+    recalculate(editor);
+    
   });
   
   function recalculate (editor) {
@@ -42,6 +46,10 @@ $(function() {
         lines = code.split("\n"),
         chunks,
         lastChunk;
+        
+    while (lines[lines.length - 1].match(/^\s*$/)) {
+      lines.pop();
+    }
         
     if (lines.length === 0) {
       return;
@@ -61,27 +69,35 @@ $(function() {
         return acc;
       }, [[]]);
       
-    chunks = filterWith('.length > 0', chunks);
+    chunks = allong.es.filterWith('.length > 0', chunks);
     
     if (chunks.length == 0) {
       return;
     }
     
-    chunks = map(chunks, function (chunk) {
-      var inline = chunk[chunk.length - 1].match(/\/\/=>/)
-        ? parseInt(chunk.pop().split(' ')[1])
-        : lines.length
+    chunks = allong.es.map(chunks, function (chunk) {
+      var wantsResult = chunk[chunk.length - 1].match(/\/\/=>/),
+          resultPosition = wantsResult
+                    ? parseInt(chunk.pop().split(' ')[1])
+                    : lines.length,
+          result;
       
-      var value = eval(chunk.join('\r'));
-      
-      if (inline) {
-        lines[inline] = '  //=> ' + JSON.stringify(value);
+      try {
+        result = JSON.stringify(eval(chunk.join('\n')));
+        if (wantsResult) {
+          lines[resultPosition] = '  //=> ' + result;
+        }
+      }
+      catch (error) {
+        lines[resultPosition] = '  //=> ' + error.name + ': ' + error.message;
       }
     });
     
-    code = lines.join('\r');
+    code = lines.join('\n');
     
     editor.setValue(code);
+    
+    editor.gotoLine(editor.session.getLength());
       
   };
 });

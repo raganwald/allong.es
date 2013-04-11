@@ -8,7 +8,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script src="/assets/js/jquery-1.8.3.min.js"></script>
     <script src="/assets/js/repo.min.js"></script>
-    <script src="/assets/js/allong.es.0.10.0.js"></script>
+    <script src="/assets/js/allong.es.js"></script>
+    <script src="/assets/js/aceify.js"></script>
+    <script src="http://rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -21,10 +23,6 @@
 
         <LINK REL=StyleSheet HREF="/assets/css/pygments.css" TYPE="text/css" MEDIA=screen>
         <title>try allong.es</title>
-
-    <script src="/assets/js/allong.es.js"></script>
-    
-    <script src="http://rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
     
     <style>
     
@@ -41,10 +39,11 @@
             <header>
         <div class="container">
           <h1 style="cursor: pointer;" onclick="javascript:void(document.location = '/');">allong.es</h1>
-          <h2>Practical function combinator and decorator recipes from <a href="http://leanpub.com/javascript-allonge">JavaScript Allongé</a></h2>
+          <h2>Practical function combinator and decorator recipes inspired by <a href="http://leanpub.com/javascript-allonge">JavaScript Allongé</a></h2>
 
           <section id="downloads">
-            <a href="https://github.com/raganwald/allong.es" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+            <a href="http://github.com/raganwald/allong.es" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+            <a href="/try/" class="btn btn-github"><span class="icon"></span>Try in your browser</a>
           </section>
         </div>
       </header>
@@ -56,76 +55,100 @@
           <h2>try allong.es</h2>
         </div>
 
-        <p><em>The code samples on this page are all editable and can be evaluated by pressing command-enter.</em></p>
+        <p><em>The code samples on this page are all editable and can be evaluated by pressing command-enter. Try playing with them! (note: This page is a work in progress, some of the examples may not be fully operational yet).</em></p>
 
 <hr />
-
-<h1 id="allonges"><code>allong.es</code></h1>
-
-<p>The <code>allong.es</code> library is a collection of functions designed to facilitate writing JavaScript and/or CoffeeScript with functions as first-class values. The emphasis in <code>allong.es</code> is on composing and decomposing functions using combinators and decorators. <code>allong.es</code> is designed to complement libraries like <a href="http://underscorejs.org">Underscore</a>, not compete with them.</p>
 
 <h2 id="currying-and-partial-application">Currying and Partial Application</h2>
 
 <p>At the heart of <code>allong.es</code> are the functions that curry and partially apply other functions. The two most important to understand are <code>call</code> and <code>apply</code>. They work very much like the <code>.call</code> and <code>.apply</code> methods that every JavaScript function implements:</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">function</span> <span class="nx">greet</span> <span class="p">(</span><span class="nx">how</span><span class="p">,</span> <span class="nx">whom</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">call</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">call</span><span class="p">,</span>
+    <span class="nx">apply</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">apply</span><span class="p">;</span>
+    
+<span class="kd">function</span> <span class="nx">greet</span> <span class="p">(</span><span class="nx">how</span><span class="p">,</span> <span class="nx">whom</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">return</span> <span class="s1">&#39;&#39;</span> <span class="o">+</span> <span class="nx">how</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="nx">whom</span> <span class="o">+</span> <span class="s1">&#39;!&#39;</span><span class="p">;</span>
 <span class="p">};</span>
   
 <span class="nx">call</span><span class="p">(</span><span class="nx">greet</span><span class="p">,</span> <span class="s1">&#39;Hello&#39;</span><span class="p">,</span> <span class="s1">&#39;Tom&#39;</span><span class="p">)</span>
-  <span class="c1">//=&gt; &#39;Hello, Tom!&#39;</span>
+  <span class="c1">//=&gt;</span>
   
 <span class="nx">apply</span><span class="p">(</span><span class="nx">greet</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Hello&#39;</span><span class="p">,</span> <span class="s1">&#39;Tom&#39;</span><span class="p">])</span>
-  <span class="c1">//=&gt; &#39;Hello, Tom!&#39;</span>
+  <span class="c1">//=&gt;</span>
 </code></pre></div>
 
 <p>Their “special sauce” is that they automatically <em>curry</em> the supplied function, so if you provide fewer or no arguments, you get back a partially applied or curried function:</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">call</span><span class="p">(</span><span class="nx">greet</span><span class="p">)(</span><span class="s1">&#39;Hello&#39;</span><span class="p">)(</span><span class="s1">&#39;Tom&#39;</span><span class="p">)</span>
-  <span class="c1">//=&gt; &#39;Hello, Tom!&#39;</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">call</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">call</span><span class="p">,</span>
+    <span class="nx">apply</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">apply</span><span class="p">;</span>
+    
+<span class="kd">function</span> <span class="nx">greet</span> <span class="p">(</span><span class="nx">how</span><span class="p">,</span> <span class="nx">whom</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="s1">&#39;&#39;</span> <span class="o">+</span> <span class="nx">how</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="nx">whom</span> <span class="o">+</span> <span class="s1">&#39;!&#39;</span><span class="p">;</span>
+<span class="p">};</span>
   
-<span class="nx">call</span><span class="p">(</span><span class="nx">greet</span><span class="p">,</span> <span class="s1">&#39;Hello&#39;</span><span class="p">)(</span><span class="s1">&#39;Tom&#39;</span><span class="p">])</span>
-  <span class="c1">//=&gt; &#39;Hello, Tom!&#39;</span>
+<span class="nx">call</span><span class="p">(</span><span class="nx">greet</span><span class="p">)(</span><span class="s1">&#39;Hello&#39;</span><span class="p">)(</span><span class="s1">&#39;Tom&#39;</span><span class="p">)</span>
+  <span class="c1">//=&gt;</span>
+  
+<span class="nx">call</span><span class="p">(</span><span class="nx">greet</span><span class="p">,</span> <span class="s1">&#39;Hello&#39;</span><span class="p">)(</span><span class="s1">&#39;Tom&#39;</span><span class="p">)</span>
+  <span class="c1">//=&gt;</span>
   
 <span class="nx">apply</span><span class="p">(</span><span class="nx">greet</span><span class="p">,</span> <span class="p">[])(</span><span class="s1">&#39;Hello&#39;</span><span class="p">)(</span><span class="s1">&#39;Tom&#39;</span><span class="p">)</span>
-  <span class="c1">//=&gt; &#39;Hello, Tom!&#39;</span>
+  <span class="c1">//=&gt;</span>
   
-<span class="nx">apply</span><span class="p">(</span><span class="nx">greet</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Hello&#39;</span><span class="p">])(</span><span class="s1">&#39;Tom&#39;</span><span class="p">])</span>
-  <span class="c1">//=&gt; &#39;Hello, Tom!&#39;</span>
+<span class="nx">apply</span><span class="p">(</span><span class="nx">greet</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Hello&#39;</span><span class="p">])(</span><span class="s1">&#39;Tom&#39;</span><span class="p">)</span>
+  <span class="c1">//=&gt;</span>
 </code></pre></div>
 
 <h3 id="immediate-application">immediate application</h3>
 
 <p>If you don’t want the currying/partial application behaviour, there is an immediate application version named (appropriately), <code>callNow</code> (and also another named <code>applyNow</code>, not shown):</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">callNow</span><span class="p">(</span><span class="nx">greet</span><span class="p">,</span> <span class="s1">&#39;Hello&#39;</span><span class="p">,</span> <span class="s1">&#39;Tom&#39;</span><span class="p">)</span>
-  <span class="c1">//=&gt; &#39;Hello, Tom!&#39;</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">callNow</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">callNow</span><span class="p">;</span>
+    
+<span class="kd">function</span> <span class="nx">greet</span> <span class="p">(</span><span class="nx">how</span><span class="p">,</span> <span class="nx">whom</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="s1">&#39;&#39;</span> <span class="o">+</span> <span class="nx">how</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="nx">whom</span> <span class="o">+</span> <span class="s1">&#39;!&#39;</span><span class="p">;</span>
+<span class="p">};</span>
+  
+<span class="nx">callNow</span><span class="p">(</span><span class="nx">greet</span><span class="p">,</span> <span class="s1">&#39;Hello&#39;</span><span class="p">,</span> <span class="s1">&#39;Tom&#39;</span><span class="p">)</span>
+  <span class="c1">//=&gt;</span>
   
 <span class="nx">callNow</span><span class="p">(</span><span class="nx">greet</span><span class="p">,</span> <span class="s1">&#39;Hello&#39;</span><span class="p">)</span>
-  <span class="c1">//=&gt; &#39;Hello, undefined!&#39;</span>
+  <span class="c1">//=&gt;</span>
 </code></pre></div>
 
 <h3 id="variations-on-the-order-of-applying-the-arguments">variations on the order of applying the arguments</h3>
 
 <p><code>callRight</code> applies any arguments supplied to the right. If you supply all the arguments, it’s the same as <code>call</code>, but if you supply fewer arguments, you get a right partial application:</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">callRight</span><span class="p">(</span><span class="nx">greet</span><span class="p">,</span> <span class="s1">&#39;Hello&#39;</span><span class="p">,</span> <span class="s1">&#39;Tom&#39;</span><span class="p">)</span>
-  <span class="c1">//=&gt; &#39;Hello, Tom!&#39;</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">callRight</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">callRight</span><span class="p">;</span>
+
+<span class="kd">function</span> <span class="nx">greet</span> <span class="p">(</span><span class="nx">how</span><span class="p">,</span> <span class="nx">whom</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="s1">&#39;&#39;</span> <span class="o">+</span> <span class="nx">how</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="nx">whom</span> <span class="o">+</span> <span class="s1">&#39;!&#39;</span><span class="p">;</span>
+<span class="p">};</span>
+  
+<span class="nx">callRight</span><span class="p">(</span><span class="nx">greet</span><span class="p">,</span> <span class="s1">&#39;Hello&#39;</span><span class="p">,</span> <span class="s1">&#39;Tom&#39;</span><span class="p">)</span>
+  <span class="c1">//=&gt;</span>
   
 <span class="nx">callRight</span><span class="p">(</span><span class="nx">greet</span><span class="p">,</span> <span class="s1">&#39;Hello&#39;</span><span class="p">)(</span><span class="s1">&#39;Tom&#39;</span><span class="p">)</span>
-  <span class="c1">//=&gt; &#39;Tom, Hello!&#39;</span>
+  <span class="c1">//=&gt;</span>
 </code></pre></div>
 
 <p><code>callFlipped</code> applies the arguments backwards, even when curried:</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">callFlipped</span><span class="p">(</span><span class="nx">greet</span><span class="p">,</span> <span class="s1">&#39;Hello&#39;</span><span class="p">,</span> <span class="s1">&#39;Tom&#39;</span><span class="p">)</span>
-  <span class="c1">//=&gt; &#39;Tom, Hello!&#39;</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">callFlipped</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">callFlipped</span><span class="p">;</span>
+
+<span class="kd">function</span> <span class="nx">greet</span> <span class="p">(</span><span class="nx">how</span><span class="p">,</span> <span class="nx">whom</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="s1">&#39;&#39;</span> <span class="o">+</span> <span class="nx">how</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="nx">whom</span> <span class="o">+</span> <span class="s1">&#39;!&#39;</span><span class="p">;</span>
+<span class="p">};</span>
+  
+<span class="nx">callFlipped</span><span class="p">(</span><span class="nx">greet</span><span class="p">,</span> <span class="s1">&#39;Hello&#39;</span><span class="p">,</span> <span class="s1">&#39;Tom&#39;</span><span class="p">)</span>
+  <span class="c1">//=&gt;</span>
   
 <span class="nx">callFlipped</span><span class="p">(</span><span class="nx">greet</span><span class="p">,</span> <span class="s1">&#39;Hello&#39;</span><span class="p">)(</span><span class="s1">&#39;Tom&#39;</span><span class="p">)</span>
-  <span class="c1">//=&gt; &#39;Tom, Hello!&#39;</span>
+  <span class="c1">//=&gt;</span>
   
 <span class="nx">callFlipped</span><span class="p">(</span><span class="nx">greet</span><span class="p">)(</span><span class="s1">&#39;Hello&#39;</span><span class="p">)(</span><span class="s1">&#39;Tom&#39;</span><span class="p">)</span>
-  <span class="c1">//=&gt; &#39;Tom, Hello!&#39;</span>
+  <span class="c1">//=&gt;</span>
 </code></pre></div>
 
 <h3 id="more-partial-application">more partial application</h3>
@@ -140,7 +163,10 @@
 
 <p><code>allong.es</code> does support the <code>curry</code> function, it is implemented as the unary form of <code>call</code>:</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">curry</span> <span class="o">=</span> <span class="nx">unary</span><span class="p">(</span><span class="nx">call</span><span class="p">);</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">call</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">call</span><span class="p">,</span>
+    <span class="nx">unary</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">unary</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">curry</span> <span class="o">=</span> <span class="nx">unary</span><span class="p">(</span><span class="nx">call</span><span class="p">);</span>
 </code></pre></div>
 
 <h3 id="with">with</h3>
@@ -170,28 +196,52 @@
   <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Huey&#39;</span> <span class="p">},</span>
   <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Dewey&#39;</span> <span class="p">},</span>
   <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Louie&#39;</span> <span class="p">}</span>
-<span class="p">]</span>
+<span class="p">];</span>
 </code></pre></div>
 
 <p>You can get the names with either:</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">pluck</span><span class="p">(</span><span class="nx">users</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">)</span>
-  <span class="c1">//=&gt; [&#39;Huey&#39;, &#39;Dewey&#39;, &#39;Louie&#39;]</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">pluck</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">pluck</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">users</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Huey&#39;</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Dewey&#39;</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Louie&#39;</span> <span class="p">}</span>
+<span class="p">];</span>
+
+<span class="nx">pluck</span><span class="p">(</span><span class="nx">users</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">)</span>
+  <span class="c1">//=&gt;</span>
 </code></pre></div>
 
 <p>Or:</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">pluckWith</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="nx">users</span><span class="p">)</span>
-  <span class="c1">//=&gt; [&#39;Huey&#39;, &#39;Dewey&#39;, &#39;Louie&#39;]</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">pluckWith</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">pluckWith</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">users</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Huey&#39;</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Dewey&#39;</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Louie&#39;</span> <span class="p">}</span>
+<span class="p">];</span>
+
+<span class="nx">pluckWith</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="nx">users</span><span class="p">)</span>
+  <span class="c1">//=&gt;</span>
 </code></pre></div>
 
 <p>The latter is interesting because <code>pluck</code> and <code>pluckWith</code> are both automatically curried (like almost everything that isn’t named “now”). Thus, we could also write:</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">namesOf</span> <span class="o">=</span> <span class="nx">pluckWith</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">);</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">pluckWith</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">pluckWith</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">users</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Huey&#39;</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Dewey&#39;</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Louie&#39;</span> <span class="p">}</span>
+<span class="p">];</span>
+
+<span class="kd">var</span> <span class="nx">namesOf</span> <span class="o">=</span> <span class="nx">pluckWith</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">);</span>
 
 <span class="c1">// ...</span>
 <span class="nx">namesOf</span><span class="p">(</span><span class="nx">users</span><span class="p">)</span>
-  <span class="c1">//=&gt; [&#39;Huey&#39;, &#39;Dewey&#39;, &#39;Louie&#39;]</span>
+  <span class="c1">//=&gt;</span>
 </code></pre></div>
 
 <h2 id="arity-function-decorators">Arity Function Decorators</h2>
@@ -200,23 +250,23 @@
 
 <p>Makes a function into a variadic (accepts any number of arguments). The last named parameter will be given an array of arguments.</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">variadic</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;allong.es&#39;</span><span class="p">).</span><span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">variadic</span><span class="p">;</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">variadic</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">variadic</span><span class="p">;</span>
 
 <span class="kd">var</span> <span class="nx">fn</span> <span class="o">=</span> <span class="nx">variadic</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">a</span> <span class="p">})</span>
 
 <span class="nx">fn</span><span class="p">()</span>
-  <span class="c1">//=&gt; []</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">fn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-  <span class="c1">//=&gt; [1,2,3]</span>
+  <span class="c1">//=&gt;</span>
 
 <span class="nx">fn</span> <span class="o">=</span> <span class="nx">variadic</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="nx">b</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="p">{</span> <span class="nx">a</span><span class="o">:</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="o">:</span> <span class="nx">b</span> <span class="p">}</span> <span class="p">})</span>
 
 <span class="nx">fn</span><span class="p">()</span>
-  <span class="c1">//=&gt; { a: undefined, b: [] }</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">fn</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-  <span class="c1">//=&gt; { a: 1, b: [] }</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">fn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
-  <span class="c1">//=&gt; { a: 1, b: [2, 3] }</span>
+  <span class="c1">//=&gt;</span>
 </code></pre></div>
 
 <h3 id="variadic-part-ii">variadic, part ii</h3>
@@ -225,15 +275,22 @@
 
 <p>You do this by prefacing the function argument with a length:</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">fn</span> <span class="o">=</span> <span class="nx">variadic</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="nx">b</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="p">{</span> <span class="nx">a</span><span class="o">:</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="o">:</span> <span class="nx">b</span> <span class="p">}</span> <span class="p">});</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">variadic</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">variadic</span><span class="p">;</span>
 
+<span class="kd">var</span> <span class="nx">fn</span> <span class="o">=</span> <span class="nx">variadic</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="p">{</span> <span class="nx">a</span><span class="o">:</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="o">:</span> <span class="nx">b</span> <span class="p">};</span> <span class="p">});</span>
 <span class="nx">fn</span><span class="p">.</span><span class="nx">length</span>
-  <span class="c1">//=&gt; 0</span>
-  
-<span class="nx">fn2</span> <span class="o">=</span> <span class="nx">variadic</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="nx">b</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="p">{</span> <span class="nx">a</span><span class="o">:</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="o">:</span> <span class="nx">b</span> <span class="p">}</span> <span class="p">});</span> 
+  <span class="c1">//=&gt;</span>
 
+<span class="nx">fn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+  <span class="c1">//=&gt;</span>
+  
+<span class="kd">var</span> <span class="nx">fn2</span> <span class="o">=</span> <span class="nx">variadic</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="p">{</span> <span class="nx">a</span><span class="o">:</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="o">:</span> <span class="nx">b</span> <span class="p">};</span> <span class="p">});</span> 
 <span class="nx">fn2</span><span class="p">.</span><span class="nx">length</span>
-  <span class="c1">//=&gt; 1</span>
+  <span class="c1">//=&gt;</span>
+
+<span class="nx">fn2</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+  <span class="c1">// TODO: Explain this result!</span>
+  <span class="c1">//=&gt;</span>
 </code></pre></div>
 
 <h3 id="unary-binary-and-ternary">unary, binary, and ternary</h3>
@@ -241,121 +298,128 @@
 <p>Sometimes, you have a function that takes multiple arguments, but you only want it to accept one, or two, or maybe three arguments and ignore the rest. For example, <code>parseInt</code> takes a radix as an optional second parameter. And that is havoc if you try to use it with <code>Array.map</code>:</p>
 
 <div class="highlight"><pre><code class="javascript"><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;3&#39;</span><span class="p">,</span> <span class="s1">&#39;4&#39;</span><span class="p">,</span> <span class="s1">&#39;5&#39;</span><span class="p">].</span><span class="nx">map</span><span class="p">(</span><span class="nb">parseInt</span><span class="p">)</span>
-  <span class="c1">//=&gt; [ 1,</span>
-  <span class="c1">//     NaN,</span>
-  <span class="c1">//     NaN,</span>
-  <span class="c1">//     NaN,</span>
-  <span class="c1">//     NaN ]</span>
+  <span class="c1">//=&gt;</span>
 </code></pre></div>
 
 <p>Use <code>unary(parseInt)</code> to solve the problem:</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;3&#39;</span><span class="p">,</span> <span class="s1">&#39;4&#39;</span><span class="p">,</span> <span class="s1">&#39;5&#39;</span><span class="p">].</span><span class="nx">map</span><span class="p">(</span><span class="nx">unary</span><span class="p">(</span><span class="nb">parseInt</span><span class="p">))</span>
-  <span class="c1">//=&gt; [ 1, 2, 3, 4, 5 ]</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">unary</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">unary</span><span class="p">;</span>
+
+<span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;3&#39;</span><span class="p">,</span> <span class="s1">&#39;4&#39;</span><span class="p">,</span> <span class="s1">&#39;5&#39;</span><span class="p">].</span><span class="nx">map</span><span class="p">(</span><span class="nx">unary</span><span class="p">(</span><span class="nb">parseInt</span><span class="p">))</span>
+  <span class="c1">//=&gt;</span>
 </code></pre></div>
 
 <p><code>binary</code> has similar uses when working with <code>Array.reduce</code> and its habit of passing three parameters to your supplied function.</p>
 
 <h2 id="miscellaneous-combinators">Miscellaneous Combinators</h2>
 
-<h3 id="bound">bound</h3>
+<h3 id="get-and-getwith">get and getWith</h3>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">bound</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;allong.es&#39;</span><span class="p">).</span><span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">bound</span><span class="p">;</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">get</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">get</span><span class="p">,</span>
+    <span class="nx">getWith</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">getWith</span><span class="p">,</span>
+    <span class="nx">map</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">map</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">fruits</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="nx">colour</span><span class="o">:</span> <span class="s1">&#39;orange&#39;</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;banana&#39;</span><span class="p">,</span> <span class="nx">colour</span><span class="o">:</span> <span class="s1">&#39;yellow&#39;</span> <span class="p">}</span>
+<span class="p">];</span>
     
-<span class="nx">bound</span><span class="p">(</span><span class="nx">fn</span><span class="p">,</span> <span class="nx">args</span><span class="p">...)(</span><span class="nx">obj</span><span class="p">)</span>
-  <span class="c1">//=&gt; fn.bind(obj, args...)</span>
-</code></pre></div>
+<span class="nx">get</span><span class="p">(</span><span class="nx">fruits</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;colour&#39;</span><span class="p">)</span>
+  <span class="c1">//=&gt;</span>
 
-<h3 id="getwith">getWith</h3>
-
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">getWith</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;allong.es&#39;</span><span class="p">).</span><span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">getWith</span><span class="p">;</span>
-    
-<span class="nx">array</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">getWith</span><span class="p">(</span><span class="s1">&#39;property&#39;</span><span class="p">))</span>
-  <span class="c1">//=&gt; array.map(function (element) {</span>
-  <span class="c1">//               return element[&#39;property&#39;]</span>
-  <span class="c1">//             })</span>
+<span class="nx">getWith</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="nx">fruits</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+  <span class="c1">//=&gt;</span>
+  
+<span class="nx">map</span><span class="p">(</span><span class="nx">fruits</span><span class="p">,</span> <span class="nx">getWith</span><span class="p">(</span><span class="s1">&#39;colour&#39;</span><span class="p">))</span>
+  <span class="c1">//=&gt;</span>
 </code></pre></div>
 
 <h2 id="functional-composition">Functional Composition</h2>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">compose</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;allong.es&#39;</span><span class="p">).</span><span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">compose</span><span class="p">,</span>
-    <span class="nx">sequence</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;allong.es&#39;</span><span class="p">).</span><span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">sequence</span><span class="p">;</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">compose</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">compose</span><span class="p">,</span>
+    <span class="nx">sequence</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">sequence</span><span class="p">,</span>
+    <span class="nx">mapWith</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">mapWith</span><span class="p">,</span>
+    <span class="nx">getWith</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">getWith</span><span class="p">;</span>
     
-<span class="nx">compose</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
-  <span class="c1">//=&gt; function (x) {</span>
-  <span class="c1">//     return a(b(c(x)))</span>
-  <span class="c1">//   }</span>
- 
-<span class="nx">sequence</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
-  <span class="c1">//=&gt; function (x) {</span>
-  <span class="c1">//     return c(b(a(x)))</span>
-  <span class="c1">//   }</span>
+<span class="kd">var</span> <span class="nx">myPluckWith</span> <span class="o">=</span> <span class="nx">compose</span><span class="p">(</span><span class="nx">mapWith</span><span class="p">,</span> <span class="nx">getWith</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">fruits</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="nx">colour</span><span class="o">:</span> <span class="s1">&#39;orange&#39;</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;banana&#39;</span><span class="p">,</span> <span class="nx">colour</span><span class="o">:</span> <span class="s1">&#39;yellow&#39;</span> <span class="p">}</span>
+<span class="p">];</span>
+
+<span class="nx">myPluckWith</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="nx">fruits</span><span class="p">)</span>
+<span class="c1">//=&gt;</span>
 </code></pre></div>
 
 <h2 id="list-combinators">List Combinators</h2>
 
 <h3 id="mapwith-and-deepmapwith">mapWith and deepMapWith</h3>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">mapWith</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;allong.es&#39;</span><span class="p">).</span><span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">mapWith</span><span class="p">,</span>
-    <span class="nx">deepMapWith</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;allong.es&#39;</span><span class="p">).</span><span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">deepMapWith</span><span class="p">;</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">mapWith</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">mapWith</span><span class="p">,</span>
+    <span class="nx">deepMapWith</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">deepMapWith</span><span class="p">;</span>
     
 <span class="kd">var</span> <span class="nx">squareList</span> <span class="o">=</span> <span class="nx">mapWith</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">x</span> <span class="o">*</span> <span class="nx">x</span> <span class="p">})</span>
 
 <span class="nx">squareList</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
-  <span class="c1">//=&gt; [1, 4, 9, 16]</span>
+  <span class="c1">//=&gt;</span>
   
 <span class="kd">var</span> <span class="nx">squareTree</span> <span class="o">=</span> <span class="nx">deepMapWith</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">x</span> <span class="o">*</span> <span class="nx">x</span> <span class="p">})</span>
 
 <span class="nx">squareTree</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
-  <span class="c1">//=&gt; [1, 4, [9, 16]]</span>
+  <span class="c1">//=&gt;</span>
 </code></pre></div>
 
 <h2 id="functionmethod-decorators">Function/Method Decorators</h2>
 
 <h3 id="maybe">maybe</h3>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">maybe</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;allong.es&#39;</span><span class="p">).</span><span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">maybe</span><span class="p">;</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">maybe</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">maybe</span><span class="p">;</span>
     
 <span class="kd">var</span> <span class="nx">safeFirst</span> <span class="o">=</span> <span class="nx">maybe</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">arr</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">})</span>
 
 <span class="nx">safeFirst</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
-  <span class="c1">//=&gt; 1</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">safeFirst</span><span class="p">(</span><span class="kc">null</span><span class="p">)</span>
-  <span class="c1">//=&gt; null</span>
+  <span class="c1">//=&gt;</span>
 </code></pre></div>
 
 <h3 id="tap">tap</h3>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">tap</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;allong.es&#39;</span><span class="p">).</span><span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">tap</span><span class="p">;</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">tap</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">tap</span><span class="p">,</span>
+    <span class="nx">send</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">send</span><span class="p">;</span>
     
 <span class="nx">tap</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="nx">send</span><span class="p">(</span><span class="s1">&#39;pop&#39;</span><span class="p">))</span>
-  <span class="c1">//=&gt; [1, 2, 3, 4]</span>
+  <span class="c1">//=&gt;</span>
 </code></pre></div>
 
 <h3 id="fluent">fluent</h3>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">fluent</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;allong.es&#39;</span><span class="p">).</span><span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">fluent</span><span class="p">;</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">fluent</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">fluent</span><span class="p">;</span>
     
-<span class="nx">Role</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{}</span>
+<span class="nx">Role</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{};</span>
 
 <span class="nx">Role</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">set</span> <span class="o">=</span> <span class="nx">fluent</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">property</span><span class="p">,</span> <span class="nx">name</span><span class="p">)</span> <span class="p">{</span> 
   <span class="k">this</span><span class="p">[</span><span class="nx">property</span><span class="p">]</span> <span class="o">=</span> <span class="nx">name</span> 
-<span class="p">})</span>
+<span class="p">});</span>
 
 <span class="kd">var</span> <span class="nx">doomed</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Role</span><span class="p">()</span>
   <span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s2">&quot;Fredo&quot;</span><span class="p">)</span>
   <span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;relationship&#39;</span><span class="p">,</span> <span class="s1">&#39;brother&#39;</span><span class="p">)</span>
-  <span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;parts&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;II&#39;</span><span class="p">])</span>
+  <span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;parts&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;II&#39;</span><span class="p">]);</span>
+  
+<span class="nx">doomed</span>
+  <span class="c1">//=&gt;</span>
 </code></pre></div>
 
 <h3 id="once">once</h3>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">once</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;allong.es&#39;</span><span class="p">).</span><span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">once</span><span class="p">;</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">once</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">once</span><span class="p">;</span>
     
-<span class="kd">var</span> <span class="nx">message</span> <span class="o">=</span> <span class="nx">once</span><span class="p">(</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Hello, it&#39;s me&quot;</span><span class="p">)</span> <span class="p">})</span>
+<span class="kd">var</span> <span class="nx">message</span> <span class="o">=</span> <span class="nx">once</span><span class="p">(</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="s2">&quot;Hello, it&#39;s me&quot;</span><span class="p">;</span> <span class="p">});</span>
 
 <span class="nx">message</span><span class="p">()</span>
-  <span class="c1">//=&gt; &quot;Hello, it&#39;s me&quot;</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">message</span><span class="p">()</span>
   <span class="c1">//=&gt;</span>
 <span class="nx">message</span><span class="p">()</span>
@@ -366,8 +430,8 @@
 
 <h2 id="decorating-classesconstructors">Decorating Classes/Constructors</h2>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">mixin</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;allong.es&#39;</span><span class="p">).</span><span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">mixin</span><span class="p">,</span>
-    <span class="nx">classDecorator</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;allong.es&#39;</span><span class="p">).</span><span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">classDecorator</span><span class="p">;</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">mixin</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">mixin</span><span class="p">,</span>
+    <span class="nx">classDecorator</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">classDecorator</span><span class="p">;</span>
     
 <span class="kd">function</span> <span class="nx">Todo</span> <span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span> <span class="k">instanceof</span> <span class="nx">Todo</span>
@@ -396,7 +460,7 @@
 <span class="c1">// Or use AddLocation(Todo.prototype)</span>
 
 <span class="k">new</span> <span class="nx">Todo</span><span class="p">(</span><span class="s2">&quot;Vacuum&quot;</span><span class="p">).</span><span class="nx">setLocation</span><span class="p">(</span><span class="s1">&#39;Home&#39;</span><span class="p">);</span>
-  <span class="c1">//=&gt; { name: &#39;Vacuum&#39;,</span>
+  <span class="c1">//=&gt;</span>
   <span class="c1">//     done: false,</span>
   <span class="c1">//     location: &#39;Home&#39; }</span>
 
@@ -412,7 +476,7 @@
 <span class="kd">var</span> <span class="nx">ColourTodo</span> <span class="o">=</span> <span class="nx">AndColourCoded</span><span class="p">(</span><span class="nx">Todo</span><span class="p">);</span>
 
 <span class="k">new</span> <span class="nx">ColourTodo</span><span class="p">(</span><span class="s1">&#39;Use More Decorators&#39;</span><span class="p">).</span><span class="nx">setColourRGB</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-  <span class="c1">//=&gt; { name: &#39;Use More Decorators&#39;,</span>
+  <span class="c1">//=&gt;</span>
   <span class="c1">//     done: false,</span>
   <span class="c1">//     colourCode: { r: 0, g: 255, b: 0 } }</span>
 </code></pre></div>
@@ -425,7 +489,7 @@
 
 <p>The functional iterators utilities are all namespaced:</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">iterators</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;allong.es&#39;</span><span class="p">).</span><span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">iterators</span><span class="p">;</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">iterators</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">iterators</span><span class="p">;</span>
 </code></pre></div>
 
 <h3 id="flatarrayiterator-and-recursivearrayiterator">FlatArrayIterator and RecursiveArrayIterator</h3>
@@ -438,43 +502,43 @@
 <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">FlatArrayIterator</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]);</span>
 
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 1</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 2</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 3</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 4</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 5</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; undefined</span>
+  <span class="c1">//=&gt;</span>
     
 <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">FlatArrayIterator</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="mi">5</span><span class="p">]);</span>
 
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 1</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; [2, 3, 4]</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 5</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; undefined</span>
+  <span class="c1">//=&gt;</span>
     
 <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">RecursiveArrayIterator</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="mi">5</span><span class="p">]);</span>
 
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 1</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 2</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 3</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 4</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 5</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; undefined</span>
+  <span class="c1">//=&gt;</span>
 </code></pre></div>
 
 <h3 id="range-and-numbers">range and numbers</h3>
@@ -485,74 +549,74 @@
 <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
 
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 1</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 2</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 3</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 4</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 5</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; undefined</span>
+  <span class="c1">//=&gt;</span>
 
 <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
 
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 1</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 3</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 5</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; undefined</span>
+  <span class="c1">//=&gt;</span>
 
 <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">range</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
 
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 5</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 4</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 3</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 2</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 1</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; undefined</span>
+  <span class="c1">//=&gt;</span>
 
 <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">range</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
 
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 1</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 2</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 3</span>
+  <span class="c1">//=&gt;</span>
 <span class="c1">// ...</span>
 
 <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">numbers</span><span class="p">();</span>
 
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 1</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 2</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 3</span>
+  <span class="c1">//=&gt;</span>
 <span class="c1">// ...</span>
 
 <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">numbers</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
 
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 0</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 1</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 2</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 3</span>
+  <span class="c1">//=&gt;</span>
 <span class="c1">// ...</span>
 </code></pre></div>
 
@@ -566,11 +630,11 @@
 <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">unfold</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span> <span class="p">});</span>
 
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 1</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 2</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 3</span>
+  <span class="c1">//=&gt;</span>
 <span class="c1">// ...</span>
     
 <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">unfoldWithReturn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="p">{</span> 
@@ -578,11 +642,11 @@
 <span class="p">});</span>
 
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 2</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 4</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 6</span>
+  <span class="c1">//=&gt;</span>
 <span class="c1">// ...</span>
 </code></pre></div>
 
@@ -608,13 +672,13 @@
 <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">unfoldWithReturn</span><span class="p">(</span><span class="nx">cards</span><span class="p">,</span> <span class="nx">pickCard</span><span class="p">);</span>
 
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 5</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 4</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 2</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; J</span>
+  <span class="c1">//=&gt;</span>
   
 <span class="c1">// ...</span>
 </code></pre></div>
@@ -628,11 +692,11 @@
 <span class="kd">var</span> <span class="nx">squares</span> <span class="o">=</span> <span class="nx">map</span><span class="p">(</span><span class="nx">numbers</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">n</span> <span class="o">*</span> <span class="nx">n</span><span class="p">;</span> <span class="p">});</span>
 
 <span class="nx">squares</span><span class="p">();</span>
-  <span class="c1">//=&gt; 1</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">squares</span><span class="p">();</span>
-  <span class="c1">//=&gt; 4</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">squares</span><span class="p">();</span>
-  <span class="c1">//=&gt; 9</span>
+  <span class="c1">//=&gt;</span>
 <span class="c1">// ...</span>
 </code></pre></div>
 
@@ -647,15 +711,15 @@
     <span class="p">});</span>
 
 <span class="nx">runningTotal</span><span class="p">();</span>
-  <span class="c1">//=&gt; 1</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">runningTotal</span><span class="p">();</span>
-  <span class="c1">//=&gt; 3</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">runningTotal</span><span class="p">();</span>
-  <span class="c1">//=&gt; 6</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">runningTotal</span><span class="p">();</span>
-  <span class="c1">//=&gt; 10</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">runningTotal</span><span class="p">();</span>
-  <span class="c1">//=&gt; 15</span>
+  <span class="c1">//=&gt;</span>
 <span class="c1">// ...</span>
 
 <span class="kd">var</span> <span class="nx">runningTotal</span> <span class="o">=</span> <span class="nx">accumulate</span><span class="p">(</span><span class="nx">numbers</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">accumulation</span><span class="p">,</span> <span class="nx">n</span><span class="p">)</span> <span class="p">{</span> 
@@ -663,15 +727,15 @@
     <span class="p">},</span> <span class="mi">5</span><span class="p">);</span>
 
 <span class="nx">runningTotal</span><span class="p">();</span>
-  <span class="c1">//=&gt; 6</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">runningTotal</span><span class="p">();</span>
-  <span class="c1">//=&gt; 8</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">runningTotal</span><span class="p">();</span>
-  <span class="c1">//=&gt; 11</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">runningTotal</span><span class="p">();</span>
-  <span class="c1">//=&gt; 15</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">runningTotal</span><span class="p">();</span>
-  <span class="c1">//=&gt; 20</span>
+  <span class="c1">//=&gt;</span>
 <span class="c1">// ...</span>
 </code></pre></div>
 
@@ -686,15 +750,15 @@
 <span class="p">};</span>
 
 <span class="nx">randomNumbers</span><span class="p">();</span>
-  <span class="c1">//=&gt; 7</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">randomNumbers</span><span class="p">();</span>
-  <span class="c1">//=&gt; 0</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">randomNumbers</span><span class="p">();</span>
-  <span class="c1">//=&gt; 1</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">randomNumbers</span><span class="p">();</span>
-  <span class="c1">//=&gt; 1</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">randomNumbers</span><span class="p">();</span>
-  <span class="c1">//=&gt; 6</span>
+  <span class="c1">//=&gt;</span>
 <span class="c1">// ...</span>
 
 <span class="kd">var</span> <span class="nx">uniques</span> <span class="o">=</span> <span class="nx">accumulateWithReturn</span><span class="p">(</span><span class="nx">randomNumbers</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">alreadySeen</span><span class="p">,</span> <span class="nx">number</span><span class="p">)</span> <span class="p">{</span>
@@ -710,19 +774,19 @@
 <span class="p">},</span> <span class="p">{});</span>
 
 <span class="nx">uniques</span><span class="p">();</span>
-  <span class="c1">//=&gt; 7</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">uniques</span><span class="p">();</span>
-  <span class="c1">//=&gt; 5</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">uniques</span><span class="p">();</span>
-  <span class="c1">//=&gt; 1</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">uniques</span><span class="p">();</span>
-  <span class="c1">//=&gt; false</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">uniques</span><span class="p">();</span>
-  <span class="c1">//=&gt; 9</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">uniques</span><span class="p">();</span>
-  <span class="c1">//=&gt; 4</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">uniques</span><span class="p">();</span>
-  <span class="c1">//=&gt; false</span>
+  <span class="c1">//=&gt;</span>
 <span class="c1">// ...</span>
 </code></pre></div>
 
@@ -738,29 +802,29 @@
 <span class="kd">var</span> <span class="nx">evens</span> <span class="o">=</span> <span class="nx">select</span><span class="p">(</span><span class="nx">randomNumbers</span><span class="p">,</span> <span class="nx">isEven</span><span class="p">);</span>
 
 <span class="nx">evens</span><span class="p">();</span>
-  <span class="c1">//=&gt; 0</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">evens</span><span class="p">();</span>
-  <span class="c1">//=&gt; 6</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">evens</span><span class="p">();</span>
-  <span class="c1">//=&gt; 0</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">evens</span><span class="p">();</span>
-  <span class="c1">//=&gt; 2</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">evens</span><span class="p">();</span>
-  <span class="c1">//=&gt; 4</span>
+  <span class="c1">//=&gt;</span>
 <span class="c1">// ...</span>
 
 <span class="kd">var</span> <span class="nx">odds</span> <span class="o">=</span> <span class="nx">reject</span><span class="p">(</span><span class="nx">randomNumbers</span><span class="p">,</span> <span class="nx">isEven</span><span class="p">);</span>
 
 <span class="nx">odds</span><span class="p">();</span>
-  <span class="c1">//=&gt; 3</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">odds</span><span class="p">();</span>
-  <span class="c1">//=&gt; 1</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">odds</span><span class="p">();</span>
-  <span class="c1">//=&gt; 7</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">odds</span><span class="p">();</span>
-  <span class="c1">//=&gt; 9</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">odds</span><span class="p">();</span>
-  <span class="c1">//=&gt; 9</span>
+  <span class="c1">//=&gt;</span>
 <span class="c1">// ...</span>
 </code></pre></div>
 
@@ -774,20 +838,20 @@
 <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">slice</span><span class="p">(</span><span class="nx">numbers</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
 
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 4</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 5</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 6</span>
+  <span class="c1">//=&gt;</span>
 
 <span class="nx">i</span> <span class="o">=</span> <span class="nx">slice</span><span class="p">(</span><span class="nx">numbers</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
 
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 10</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 11</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; undefined</span>
+  <span class="c1">//=&gt;</span>
 </code></pre></div>
 
 <h3 id="take">take</h3>
@@ -798,27 +862,27 @@
 <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">take</span><span class="p">(</span><span class="nx">numbers</span><span class="p">);</span>
 
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 1</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; undefined</span>
+  <span class="c1">//=&gt;</span>
 
 <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">take</span><span class="p">(</span><span class="nx">numbers</span><span class="p">);</span>
 
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 2</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; undefined</span>
+  <span class="c1">//=&gt;</span>
 
 <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">take</span><span class="p">(</span><span class="nx">numbers</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
 
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 3</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 4</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; 5</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">i</span><span class="p">();</span>
-  <span class="c1">//=&gt; undefined</span>
+  <span class="c1">//=&gt;</span>
 <span class="c1">// ...</span>
 </code></pre></div>
 
@@ -830,32 +894,32 @@
 <span class="nx">drop</span><span class="p">(</span><span class="nx">numbers</span><span class="p">);</span>
 
 <span class="nx">numbers</span><span class="p">();</span>
-  <span class="c1">//=&gt; 2</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">numbers</span><span class="p">();</span>
-  <span class="c1">//=&gt; 3</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">numbers</span><span class="p">();</span>
-  <span class="c1">//=&gt; 4</span>
+  <span class="c1">//=&gt;</span>
 
 <span class="nx">drop</span><span class="p">(</span><span class="nx">numbers</span><span class="p">);</span>
 
 <span class="nx">numbers</span><span class="p">();</span>
-  <span class="c1">//=&gt; 6</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">numbers</span><span class="p">();</span>
-  <span class="c1">//=&gt; 7</span>
+  <span class="c1">//=&gt;</span>
 
 <span class="nx">drop</span><span class="p">(</span><span class="nx">numbers</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
 
 <span class="nx">numbers</span><span class="p">();</span>
-  <span class="c1">//=&gt; 11</span>
+  <span class="c1">//=&gt;</span>
 <span class="nx">numbers</span><span class="p">();</span>
-  <span class="c1">//=&gt; 12</span>
+  <span class="c1">//=&gt;</span>
 <span class="c1">// ...</span>
 </code></pre></div>
 
 <h2 id="trampolining">Trampolining</h2>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">trampoline</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;allong.es&#39;</span><span class="p">).</span><span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">trampoline</span><span class="p">,</span>
-    <span class="nx">tailCall</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;allong.es&#39;</span><span class="p">).</span><span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">tailCall</span><span class="p">;</span>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">trampoline</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">trampoline</span><span class="p">,</span>
+    <span class="nx">tailCall</span> <span class="o">=</span> <span class="nx">allong</span><span class="p">.</span><span class="nx">es</span><span class="p">.</span><span class="nx">tailCall</span><span class="p">;</span>
     
 <span class="kd">function</span> <span class="nx">factorial</span> <span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">_factorial</span> <span class="o">=</span> <span class="nx">trampoline</span><span class="p">(</span> <span class="kd">function</span> <span class="nx">myself</span> <span class="p">(</span><span class="nx">acc</span><span class="p">,</span> <span class="nx">n</span><span class="p">)</span> <span class="p">{</span>
@@ -868,11 +932,8 @@
 <span class="p">};</span>
 
 <span class="nx">factorial</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
-  <span class="c1">//=&gt; 3628800</span>
+  <span class="c1">//=&gt;</span>
 </code></pre></div>
-
-<script src="./index.js"></script>
-
 
         
       </section>
@@ -883,7 +944,7 @@
 
 </footer>
 
-<script src="javascripts/scale.fix.js"></script>
+<script src="/assets/js/scale.fix.js"></script>
 
     </div>
       

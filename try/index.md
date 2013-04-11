@@ -3,44 +3,50 @@ layout: default
 title: try allong.es
 ---
 
-*The code samples on this page are all editable and can be evaluated by pressing command-enter.*
+*The code samples on this page are all editable and can be evaluated by pressing command-enter. Try playing with them! (note: This page is a work in progress, some of the examples may not be fully operational yet).*
 
 ---
-
-# `allong.es`
-
-The `allong.es` library is a collection of functions designed to facilitate writing JavaScript and/or CoffeeScript with functions as first-class values. The emphasis in `allong.es` is on composing and decomposing functions using combinators and decorators. `allong.es` is designed to complement libraries like [Underscore](http://underscorejs.org), not compete with them.
 
 ## Currying and Partial Application
 
 At the heart of `allong.es` are the functions that curry and partially apply other functions. The two most important to understand are `call` and `apply`. They work very much like the `.call` and `.apply` methods that every JavaScript function implements:
 
 {% highlight javascript %}
+var call = allong.es.call,
+    apply = allong.es.apply;
+    
 function greet (how, whom) {
   return '' + how + ', ' + whom + '!';
 };
   
 call(greet, 'Hello', 'Tom')
-  //=> 'Hello, Tom!'
+  //=>
   
 apply(greet, ['Hello', 'Tom'])
-  //=> 'Hello, Tom!'
+  //=>
 {% endhighlight %}
 
 Their "special sauce" is that they automatically *curry* the supplied function, so if you provide fewer or no arguments, you get back a partially applied or curried function:
 
 {% highlight javascript %}
-call(greet)('Hello')('Tom')
-  //=> 'Hello, Tom!'
+var call = allong.es.call,
+    apply = allong.es.apply;
+    
+function greet (how, whom) {
+  return '' + how + ', ' + whom + '!';
+};
   
-call(greet, 'Hello')('Tom'])
-  //=> 'Hello, Tom!'
+call(greet)('Hello')('Tom')
+  //=>
+  
+call(greet, 'Hello')('Tom')
+  //=>
   
 apply(greet, [])('Hello')('Tom')
-  //=> 'Hello, Tom!'
+  //=>
   
-apply(greet, ['Hello'])('Tom'])
-  //=> 'Hello, Tom!'
+apply(greet, ['Hello'])('Tom')
+  //=>
 {% endhighlight %}
 
 ### immediate application
@@ -48,11 +54,17 @@ apply(greet, ['Hello'])('Tom'])
 If you don't want the currying/partial application behaviour, there is an immediate application version named (appropriately), `callNow` (and also another named `applyNow`, not shown):
 
 {% highlight javascript %}
+var callNow = allong.es.callNow;
+    
+function greet (how, whom) {
+  return '' + how + ', ' + whom + '!';
+};
+  
 callNow(greet, 'Hello', 'Tom')
-  //=> 'Hello, Tom!'
+  //=>
   
 callNow(greet, 'Hello')
-  //=> 'Hello, undefined!'
+  //=>
 {% endhighlight %}
 
 ### variations on the order of applying the arguments
@@ -60,24 +72,36 @@ callNow(greet, 'Hello')
 `callRight` applies any arguments supplied to the right. If you supply all the arguments, it's the same as `call`, but if you supply fewer arguments, you get a right partial application:
 
 {% highlight javascript %}
+var callRight = allong.es.callRight;
+
+function greet (how, whom) {
+  return '' + how + ', ' + whom + '!';
+};
+  
 callRight(greet, 'Hello', 'Tom')
-  //=> 'Hello, Tom!'
+  //=>
   
 callRight(greet, 'Hello')('Tom')
-  //=> 'Tom, Hello!'
+  //=>
 {% endhighlight %}
 
 `callFlipped` applies the arguments backwards, even when curried:
 
 {% highlight javascript %}
+var callFlipped = allong.es.callFlipped;
+
+function greet (how, whom) {
+  return '' + how + ', ' + whom + '!';
+};
+  
 callFlipped(greet, 'Hello', 'Tom')
-  //=> 'Tom, Hello!'
+  //=>
   
 callFlipped(greet, 'Hello')('Tom')
-  //=> 'Tom, Hello!'
+  //=>
   
 callFlipped(greet)('Hello')('Tom')
-  //=> 'Tom, Hello!'
+  //=>
 {% endhighlight %}
 
 ### more partial application
@@ -93,6 +117,9 @@ callFlipped(greet)('Hello')('Tom')
 `allong.es` does support the `curry` function, it is implemented as the unary form of `call`:
 
 {% highlight javascript %}
+var call = allong.es.call,
+    unary = allong.es.unary;
+
 var curry = unary(call);
 {% endhighlight %}
 
@@ -126,31 +153,55 @@ var users = [
   { name: 'Huey' },
   { name: 'Dewey' },
   { name: 'Louie' }
-]
+];
 {% endhighlight %}
 
 You can get the names with either:
 
 {% highlight javascript %}
+var pluck = allong.es.pluck;
+
+var users = [
+  { name: 'Huey' },
+  { name: 'Dewey' },
+  { name: 'Louie' }
+];
+
 pluck(users, 'name')
-  //=> ['Huey', 'Dewey', 'Louie']
+  //=>
 {% endhighlight %}
 
 Or:
 
 {% highlight javascript %}
+var pluckWith = allong.es.pluckWith;
+
+var users = [
+  { name: 'Huey' },
+  { name: 'Dewey' },
+  { name: 'Louie' }
+];
+
 pluckWith('name', users)
-  //=> ['Huey', 'Dewey', 'Louie']
+  //=>
 {% endhighlight %}
 
 The latter is interesting because `pluck` and `pluckWith` are both automatically curried (like almost everything that isn't named "now"). Thus, we could also write:
 
 {% highlight javascript %}
+var pluckWith = allong.es.pluckWith;
+
+var users = [
+  { name: 'Huey' },
+  { name: 'Dewey' },
+  { name: 'Louie' }
+];
+
 var namesOf = pluckWith('name');
 
 // ...
 namesOf(users)
-  //=> ['Huey', 'Dewey', 'Louie']
+  //=>
 {% endhighlight %}
 
 ## Arity Function Decorators
@@ -160,23 +211,23 @@ namesOf(users)
 Makes a function into a variadic (accepts any number of arguments). The last named parameter will be given an array of arguments.
 
 {% highlight javascript %}
-var variadic = require('allong.es').allong.es.variadic;
+var variadic = allong.es.variadic;
 
 var fn = variadic(function (a) { return a })
 
 fn()
-  //=> []
+  //=>
 fn(1, 2, 3)
-  //=> [1,2,3]
+  //=>
 
 fn = variadic(function (a,b) { return { a: a, b: b } })
 
 fn()
-  //=> { a: undefined, b: [] }
+  //=>
 fn(1)
-  //=> { a: 1, b: [] }
+  //=>
 fn(1,2,3)
-  //=> { a: 1, b: [2, 3] }
+  //=>
 {% endhighlight %}
 
 ### variadic, part ii
@@ -186,15 +237,22 @@ When given just the function, `variadic` returns a function with an arity of zer
 You do this by prefacing the function argument with a length:
 
 {% highlight javascript %}
-fn = variadic(function (a,b) { return { a: a, b: b } });
+var variadic = allong.es.variadic;
 
+var fn = variadic(function (a, b) { return { a: a, b: b }; });
 fn.length
-  //=> 0
-  
-fn2 = variadic(1, function (a,b) { return { a: a, b: b } }); 
+  //=>
 
+fn(1, 2, 3, 4, 5)
+  //=>
+  
+var fn2 = variadic(3, function (a, b) { return { a: a, b: b }; }); 
 fn2.length
-  //=> 1
+  //=>
+
+fn2(1, 2, 3, 4, 5)
+  // TODO: Explain this result!
+  //=>
 {% endhighlight %}
 
 ### unary, binary, and ternary
@@ -203,59 +261,61 @@ Sometimes, you have a function that takes multiple arguments, but you only want 
 
 {% highlight javascript %}
 ['1', '2', '3', '4', '5'].map(parseInt)
-  //=> [ 1,
-  //     NaN,
-  //     NaN,
-  //     NaN,
-  //     NaN ]
+  //=>
 {% endhighlight %}
 
 Use `unary(parseInt)` to solve the problem:
 
 {% highlight javascript %}
+var unary = allong.es.unary;
+
 ['1', '2', '3', '4', '5'].map(unary(parseInt))
-  //=> [ 1, 2, 3, 4, 5 ]
+  //=>
 {% endhighlight %}
 
 `binary` has similar uses when working with `Array.reduce` and its habit of passing three parameters to your supplied function.
 
 ## Miscellaneous Combinators
 
-### bound
+### get and getWith
 
 {% highlight javascript %}
-var bound = require('allong.es').allong.es.bound;
-    
-bound(fn, args...)(obj)
-  //=> fn.bind(obj, args...)
-{% endhighlight %}
+var get = allong.es.get,
+    getWith = allong.es.getWith,
+    map = allong.es.map;
 
-### getWith
-
-{% highlight javascript %}
-var getWith = require('allong.es').allong.es.getWith;
+var fruits = [
+  { name: 'orange', colour: 'orange' },
+  { name: 'banana', colour: 'yellow' }
+];
     
-array.map(getWith('property'))
-  //=> array.map(function (element) {
-  //               return element['property']
-  //             })
+get(fruits[0], 'colour')
+  //=>
+
+getWith('name', fruits[1])
+  //=>
+  
+map(fruits, getWith('colour'))
+  //=>
 {% endhighlight %}
 
 ## Functional Composition
 
 {% highlight javascript %}
-var compose = require('allong.es').allong.es.compose,
-    sequence = require('allong.es').allong.es.sequence;
+var compose = allong.es.compose,
+    sequence = allong.es.sequence,
+    mapWith = allong.es.mapWith,
+    getWith = allong.es.getWith;
     
-compose(a, b, c)
-  //=> function (x) {
-  //     return a(b(c(x)))
-  //   }
- 
-sequence(a, b, c)
-  //=> function (x) {
-  //     return c(b(a(x)))
-  //   }
+var myPluckWith = compose(mapWith, getWith);
+
+var fruits = [
+  { name: 'orange', colour: 'orange' },
+  { name: 'banana', colour: 'yellow' }
+];
+
+myPluckWith('name', fruits)
+//=>
 {% endhighlight %}
 
 ## List Combinators
@@ -263,18 +323,18 @@ sequence(a, b, c)
 ### mapWith and deepMapWith
 
 {% highlight javascript %}
-var mapWith = require('allong.es').allong.es.mapWith,
-    deepMapWith = require('allong.es').allong.es.deepMapWith;
+var mapWith = allong.es.mapWith,
+    deepMapWith = allong.es.deepMapWith;
     
 var squareList = mapWith(function (x) { return x * x })
 
 squareList([1, 2, 3, 4])
-  //=> [1, 4, 9, 16]
+  //=>
   
 var squareTree = deepMapWith(function (x) { return x * x })
 
 squareTree([1, 2, [3, 4]])
-  //=> [1, 4, [9, 16]]
+  //=>
 {% endhighlight %}
 
 ## Function/Method Decorators
@@ -282,51 +342,55 @@ squareTree([1, 2, [3, 4]])
 ### maybe
 
 {% highlight javascript %}
-var maybe = require('allong.es').allong.es.maybe;
+var maybe = allong.es.maybe;
     
 var safeFirst = maybe(function (arr) { return arr[0] })
 
 safeFirst([1, 2, 3])
-  //=> 1
+  //=>
 safeFirst(null)
-  //=> null
+  //=>
 {% endhighlight %}
 
 ### tap
 
 {% highlight javascript %}
-var tap = require('allong.es').allong.es.tap;
+var tap = allong.es.tap,
+    send = allong.es.send;
     
 tap([1, 2, 3, 4, 5], send('pop'))
-  //=> [1, 2, 3, 4]
+  //=>
 {% endhighlight %}
 
 ### fluent
 
 {% highlight javascript %}
-var fluent = require('allong.es').allong.es.fluent;
+var fluent = allong.es.fluent;
     
-Role = function () {}
+Role = function () {};
 
 Role.prototype.set = fluent( function (property, name) { 
   this[property] = name 
-})
+});
 
 var doomed = new Role()
   .set('name', "Fredo")
   .set('relationship', 'brother')
-  .set('parts', ['I', 'II'])
+  .set('parts', ['I', 'II']);
+  
+doomed
+  //=>
 {% endhighlight %}
 
 ### once
 
 {% highlight javascript %}
-var once = require('allong.es').allong.es.once;
+var once = allong.es.once;
     
-var message = once( function () { console.log("Hello, it's me") })
+var message = once( function () { return "Hello, it's me"; });
 
 message()
-  //=> "Hello, it's me"
+  //=>
 message()
   //=>
 message()
@@ -338,8 +402,8 @@ message()
 ## Decorating Classes/Constructors
 
 {% highlight javascript %}
-var mixin = require('allong.es').allong.es.mixin,
-    classDecorator = require('allong.es').allong.es.classDecorator;
+var mixin = allong.es.mixin,
+    classDecorator = allong.es.classDecorator;
     
 function Todo (name) {
   var self = this instanceof Todo
@@ -368,7 +432,7 @@ AddLocation.call(Todo.prototype);
 // Or use AddLocation(Todo.prototype)
 
 new Todo("Vacuum").setLocation('Home');
-  //=> { name: 'Vacuum',
+  //=>
   //     done: false,
   //     location: 'Home' }
 
@@ -384,7 +448,7 @@ var AndColourCoded = classDecorator({
 var ColourTodo = AndColourCoded(Todo);
 
 new ColourTodo('Use More Decorators').setColourRGB(0, 255, 0);
-  //=> { name: 'Use More Decorators',
+  //=>
   //     done: false,
   //     colourCode: { r: 0, g: 255, b: 0 } }
 {% endhighlight %}
@@ -398,7 +462,7 @@ Functional iterators are stateful functions that "iterate over" the values in so
 The functional iterators utilities are all namespaced:
 
 {% highlight javascript %}
-var iterators = require('allong.es').allong.es.iterators;
+var iterators = allong.es.iterators;
 {% endhighlight %}
 
 ### FlatArrayIterator and RecursiveArrayIterator
@@ -412,43 +476,43 @@ var FlatArrayIterator = iterators.FlatArrayIterator,
 var i = FlatArrayIterator([1, 2, 3, 4, 5]);
 
 i();
-  //=> 1
+  //=>
 i();
-  //=> 2
+  //=>
 i();
-  //=> 3
+  //=>
 i();
-  //=> 4
+  //=>
 i();
-  //=> 5
+  //=>
 i();
-  //=> undefined
+  //=>
     
 var i = FlatArrayIterator([1, [2, 3, 4], 5]);
 
 i();
-  //=> 1
+  //=>
 i();
-  //=> [2, 3, 4]
+  //=>
 i();
-  //=> 5
+  //=>
 i();
-  //=> undefined
+  //=>
     
 var i = RecursiveArrayIterator([1, [2, 3, 4], 5]);
 
 i();
-  //=> 1
+  //=>
 i();
-  //=> 2
+  //=>
 i();
-  //=> 3
+  //=>
 i();
-  //=> 4
+  //=>
 i();
-  //=> 5
+  //=>
 i();
-  //=> undefined
+  //=>
 {% endhighlight %}
 
 ### range and numbers
@@ -460,74 +524,74 @@ var range = iterators.range,
 var i = range(1, 5);
 
 i();
-  //=> 1
+  //=>
 i();
-  //=> 2
+  //=>
 i();
-  //=> 3
+  //=>
 i();
-  //=> 4
+  //=>
 i();
-  //=> 5
+  //=>
 i();
-  //=> undefined
+  //=>
 
 var i = range(1, 5, 2);
 
 i();
-  //=> 1
+  //=>
 i();
-  //=> 3
+  //=>
 i();
-  //=> 5
+  //=>
 i();
-  //=> undefined
+  //=>
 
 var i = range(5, 1);
 
 i();
-  //=> 5
+  //=>
 i();
-  //=> 4
+  //=>
 i();
-  //=> 3
+  //=>
 i();
-  //=> 2
+  //=>
 i();
-  //=> 1
+  //=>
 i();
-  //=> undefined
+  //=>
 
 var i = range(1);
 
 i();
-  //=> 1
+  //=>
 i();
-  //=> 2
+  //=>
 i();
-  //=> 3
+  //=>
 // ...
 
 var i = numbers();
 
 i();
-  //=> 1
+  //=>
 i();
-  //=> 2
+  //=>
 i();
-  //=> 3
+  //=>
 // ...
 
 var i = numbers(0);
 
 i();
-  //=> 0
+  //=>
 i();
-  //=> 1
+  //=>
 i();
-  //=> 2
+  //=>
 i();
-  //=> 3
+  //=>
 // ...
 {% endhighlight %}
 
@@ -542,11 +606,11 @@ var unfold = iterators.unfold,
 var i = unfold(1, function (n) { return n + 1; });
 
 i();
-  //=> 1
+  //=>
 i();
-  //=> 2
+  //=>
 i();
-  //=> 3
+  //=>
 // ...
     
 var i = unfoldWithReturn(1, function (n) { 
@@ -554,11 +618,11 @@ var i = unfoldWithReturn(1, function (n) {
 });
 
 i();
-  //=> 2
+  //=>
 i();
-  //=> 4
+  //=>
 i();
-  //=> 6
+  //=>
 // ...
 {% endhighlight %}
 
@@ -585,13 +649,13 @@ function pickCard (deck) {
 var i = unfoldWithReturn(cards, pickCard);
 
 i();
-  //=> 5
+  //=>
 i();
-  //=> 4
+  //=>
 i();
-  //=> 2
+  //=>
 i();
-  //=> J
+  //=>
   
 // ...
 {% endhighlight %}
@@ -606,11 +670,11 @@ var map = iterators.map;
 var squares = map(numbers, function (n) { return n * n; });
 
 squares();
-  //=> 1
+  //=>
 squares();
-  //=> 4
+  //=>
 squares();
-  //=> 9
+  //=>
 // ...
 {% endhighlight %}
 
@@ -626,15 +690,15 @@ var runningTotal = accumulate(numbers, function (accumulation, n) {
     });
 
 runningTotal();
-  //=> 1
+  //=>
 runningTotal();
-  //=> 3
+  //=>
 runningTotal();
-  //=> 6
+  //=>
 runningTotal();
-  //=> 10
+  //=>
 runningTotal();
-  //=> 15
+  //=>
 // ...
 
 var runningTotal = accumulate(numbers, function (accumulation, n) { 
@@ -642,15 +706,15 @@ var runningTotal = accumulate(numbers, function (accumulation, n) {
     }, 5);
 
 runningTotal();
-  //=> 6
+  //=>
 runningTotal();
-  //=> 8
+  //=>
 runningTotal();
-  //=> 11
+  //=>
 runningTotal();
-  //=> 15
+  //=>
 runningTotal();
-  //=> 20
+  //=>
 // ...
 {% endhighlight %}
 
@@ -666,15 +730,15 @@ var randomNumbers = function () {
 };
 
 randomNumbers();
-  //=> 7
+  //=>
 randomNumbers();
-  //=> 0
+  //=>
 randomNumbers();
-  //=> 1
+  //=>
 randomNumbers();
-  //=> 1
+  //=>
 randomNumbers();
-  //=> 6
+  //=>
 // ...
 
 var uniques = accumulateWithReturn(randomNumbers, function (alreadySeen, number) {
@@ -690,19 +754,19 @@ var uniques = accumulateWithReturn(randomNumbers, function (alreadySeen, number)
 }, {});
 
 uniques();
-  //=> 7
+  //=>
 uniques();
-  //=> 5
+  //=>
 uniques();
-  //=> 1
+  //=>
 uniques();
-  //=> false
+  //=>
 uniques();
-  //=> 9
+  //=>
 uniques();
-  //=> 4
+  //=>
 uniques();
-  //=> false
+  //=>
 // ...
 {% endhighlight %}
 
@@ -719,29 +783,29 @@ function isEven (number) {
 var evens = select(randomNumbers, isEven);
 
 evens();
-  //=> 0
+  //=>
 evens();
-  //=> 6
+  //=>
 evens();
-  //=> 0
+  //=>
 evens();
-  //=> 2
+  //=>
 evens();
-  //=> 4
+  //=>
 // ...
 
 var odds = reject(randomNumbers, isEven);
 
 odds();
-  //=> 3
+  //=>
 odds();
-  //=> 1
+  //=>
 odds();
-  //=> 7
+  //=>
 odds();
-  //=> 9
+  //=>
 odds();
-  //=> 9
+  //=>
 // ...
 {% endhighlight %}
 
@@ -756,20 +820,20 @@ var slice = iterators.slice,
 var i = slice(numbers, 3);
 
 i();
-  //=> 4
+  //=>
 i();
-  //=> 5
+  //=>
 i();
-  //=> 6
+  //=>
 
 i = slice(numbers, 3, 2);
 
 i();
-  //=> 10
+  //=>
 i();
-  //=> 11
+  //=>
 i();
-  //=> undefined
+  //=>
 {% endhighlight %}
 
 ### take
@@ -781,27 +845,27 @@ var take = iterators.take,
 var i = take(numbers);
 
 i();
-  //=> 1
+  //=>
 i();
-  //=> undefined
+  //=>
 
 var i = take(numbers);
 
 i();
-  //=> 2
+  //=>
 i();
-  //=> undefined
+  //=>
 
 var i = take(numbers, 3);
 
 i();
-  //=> 3
+  //=>
 i();
-  //=> 4
+  //=>
 i();
-  //=> 5
+  //=>
 i();
-  //=> undefined
+  //=>
 // ...
 {% endhighlight %}
 
@@ -814,33 +878,33 @@ var drop = iterators.drop,
 drop(numbers);
 
 numbers();
-  //=> 2
+  //=>
 numbers();
-  //=> 3
+  //=>
 numbers();
-  //=> 4
+  //=>
 
 drop(numbers);
 
 numbers();
-  //=> 6
+  //=>
 numbers();
-  //=> 7
+  //=>
 
 drop(numbers, 3);
 
 numbers();
-  //=> 11
+  //=>
 numbers();
-  //=> 12
+  //=>
 // ...
 {% endhighlight %}
 
 ## Trampolining
 
 {% highlight javascript %}
-var trampoline = require('allong.es').allong.es.trampoline,
-    tailCall = require('allong.es').allong.es.tailCall;
+var trampoline = allong.es.trampoline,
+    tailCall = allong.es.tailCall;
     
 function factorial (n) {
   var _factorial = trampoline( function myself (acc, n) {
@@ -853,7 +917,5 @@ function factorial (n) {
 };
 
 factorial(10);
-  //=> 3628800
+  //=>
 {% endhighlight %}
-
-<script src="./index.js"></script>
