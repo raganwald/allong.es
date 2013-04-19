@@ -21,7 +21,7 @@ describe "apply", ->
     expect( apply(three)([1, 2, 3]) ).toEqual three(1, 2, 3)
     
   it "should  be self-currying, it should apply what it gets", ->
-    expect( applyNow(three, [1, 2])(3) ).toEqual three(1, 2, 3)
+    expect( apply(three, [1, 2])(3) ).toEqual three(1, 2, 3)
 
 describe "applyNow", ->
   

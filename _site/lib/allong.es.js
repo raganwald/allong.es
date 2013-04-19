@@ -11,6 +11,7 @@
   
   var __slice = Array.prototype.slice,
       __map = Array.prototype.map,
+      __hasProp = Array.prototype.hasOwnProperty,
       __filter = Array.prototype.filter;
   
   // here's our export object
@@ -535,18 +536,6 @@
   extend(allong.es, {
     callFlipped: callFlipped,
     flip: flip
-  });
-  
-  // # COMPOSITION PART II
-  
-  //    sequence(a, b, c)
-  //      //=> function (x) {
-  //        return c(b(a(x)))
-  //      }
-  var sequence = callFlipped(compose);
-
-  extend(allong.es, {
-    sequence: sequence
   });
   
   // # APPLY
@@ -1320,7 +1309,156 @@
     }});
   
   })(allong);
+  
+  // Monadic Sequencing
+  // ------------------
+  
+  //    sequence(a, b, c)
+  //      //=> function (x) {
+  //        return c(b(a(x)))
+  //      }
+  var sequence = callFlipped(compose);
 
+  var Promise = require('promise');
+
+  var Supervisor = (function() {
+
+    function Supervisor(methods) {
+      var body, name;
+      for (name in methods) {
+        if (!__hasProp.call(methods, name)) continue;
+        body = methods[name];
+        this[name] = body;
+      }
+      this.of || (this.of = function(value) {
+        return value;
+      });
+      this.map || (this.map = function(fn) {
+        return fn;
+      });
+      this.chain || (this.chain = function(mValue, fn) {
+        return this.map(fn)(mValue);
+      });
+      for (name in this) {
+        if (!__hasProp.call(this, name)) continue;
+        body = this[name];
+        this[name] = body.bind(this);
+      }
+    }
+
+    return Supervisor;
+
+  })();
+
+  Supervisor.Identity = new Supervisor();
+
+  Supervisor.Maybe = new Supervisor({
+    map: function(fn) {
+      return function(mValue) {
+        if (mValue === null || mValue === void 0) {
+          return mValue;
+        } else {
+          return fn(mValue);
+        }
+      };
+    }
+  });
+
+  Supervisor.Writer = new Supervisor({
+    of: function(value) {
+      return [value, ''];
+    },
+    map: function(fn) {
+      return function(_arg) {
+        var newlyWritten, result, value, writtenSoFar, _ref;
+        value = _arg[0], writtenSoFar = _arg[1];
+        _ref = fn(value), result = _ref[0], newlyWritten = _ref[1];
+        return [result, writtenSoFar + newlyWritten];
+      };
+    }
+  });
+
+  Supervisor.List = new Supervisor({
+    of: function(value) {
+      return [value];
+    },
+    join: function(mValue) {
+      return mValue.reduce(this.concat, this.zero());
+    },
+    map: function(fn) {
+      return function(mValue) {
+        return mValue.map(fn);
+      };
+    },
+    zero: function() {
+      return [];
+    },
+    concat: function(ma, mb) {
+      return ma.concat(mb);
+    },
+    chain: function(mValue, fn) {
+      return this.join(this.map(fn)(mValue));
+    }
+  });
+
+  Supervisor.Promise = new Supervisor({
+    of: function(value) {
+      return new Promise(function(resolve, reject) {
+        return resolve(value);
+      });
+    },
+    map: function(fnReturningAPromise) {
+      return function(promiseIn) {
+        return new Promise(function(resolvePromiseOut, rejectPromiseOut) {
+          return promiseIn.then((function(value) {
+            return fnReturningAPromise(value).then(resolvePromiseOut, rejectPromiseOut);
+          }), rejectPromiseOut);
+        });
+      };
+    }
+  });
+
+  Supervisor.Callback = new Supervisor({
+    of: function(value) {
+      return function(callback) {
+        return callback(value);
+      };
+    },
+    map: function(fn) {
+      return function(value) {
+        return function(callback) {
+          return fn(value, callback);
+        };
+      };
+    },
+    chain: function(mValue, fn) {
+      var _this = this;
+      return function(callback) {
+        return mValue(function(value) {
+          return _this.map(fn)(value)(callback);
+        });
+      };
+    }
+  });
+
+  Supervisor.sequence = function() {
+    var args, fns, supervisor;
+    args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+    if (args[0] instanceof Supervisor) {
+      supervisor = args[0], fns = 2 <= args.length ? __slice.call(args, 1) : [];
+    } else {
+      supervisor = Supervisor.Identity;
+      fns = args;
+    }
+    return function() {
+      return fns.reduce(supervisor.chain, supervisor.of.apply(supervisor, arguments));
+    };
+  };
+
+  extend(allong.es, {
+    sequence: sequence,
+    Supervisor: Supervisor
+  });
 
   // Exports and sundries
   // --------------------

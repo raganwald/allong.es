@@ -15,7 +15,9 @@
   "engines": {
     "node": ""
   },
-  "dependencies": {},
+  "dependencies": {
+    "promise": ""
+  },
   "devDependencies": {
     "jasmine-node": "",
     "coffee-script": "",
