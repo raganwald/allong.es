@@ -1,8 +1,8 @@
 Promise = require 'promise'
 
-{Sequence} = require('../lib/allong.es.js').allong.es
+{sequence, sequence: {Then}} = require('../lib/allong.es.js').allong.es
 
-describe "do", ->
+describe "Then", ->
     
   double = (value) ->
     new Promise (resolve, reject) ->
@@ -20,7 +20,7 @@ describe "do", ->
   
     it "should work asynchronously", (done) ->
       
-      sequencedPromise = Sequence.begin(Sequence.Promise, double)(3)
+      sequencedPromise = sequence(Then, double)(3)
             
       sequencedPromise.then ((value) ->
         success = value
@@ -37,7 +37,7 @@ describe "do", ->
   
     it "should work asynchronously", (done) ->
       
-      sequencedPromise = Sequence.begin(Sequence.Promise, double, double)(2)
+      sequencedPromise = sequence(Then, double, double)(2)
             
       sequencedPromise.then ((value) ->
         success = value
@@ -58,7 +58,7 @@ describe "do", ->
         new Promise (resolve, reject) ->
           reject 'sorry, old chap'
       
-      sequencedPromise = Sequence.begin(Sequence.Promise, double, failer, double)(2)
+      sequencedPromise = sequence(Then, double, failer, double)(2)
             
       sequencedPromise.then( ((value) ->
         success = value

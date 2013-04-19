@@ -38,7 +38,6 @@ describe "curry", ->
   
   it "should be a function that returns a function", ->
     expect( curry instanceof Function).toEqual true
-    console.log curry(three)
     expect( curry(three) instanceof Function).toEqual true
   
   it "should allow a full invocation", ->
