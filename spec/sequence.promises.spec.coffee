@@ -20,9 +20,9 @@ describe "do", ->
   
     it "should work asynchronously", (done) ->
       
-      dodPromise = Sequence.begin(Sequence.Promise, double)(3)
+      sequencedPromise = Sequence.begin(Sequence.Promise, double)(3)
             
-      dodPromise.then ((value) ->
+      sequencedPromise.then ((value) ->
         success = value
         done()),
           ((reason) ->
@@ -37,9 +37,9 @@ describe "do", ->
   
     it "should work asynchronously", (done) ->
       
-      dodPromise = Sequence.begin(Sequence.Promise, double, double)(2)
+      sequencedPromise = Sequence.begin(Sequence.Promise, double, double)(2)
             
-      dodPromise.then ((value) ->
+      sequencedPromise.then ((value) ->
         success = value
         done()),
           ((reason) ->
@@ -58,9 +58,9 @@ describe "do", ->
         new Promise (resolve, reject) ->
           reject 'sorry, old chap'
       
-      dodPromise = Sequence.begin(Sequence.Promise, double, failer, double)(2)
+      sequencedPromise = Sequence.begin(Sequence.Promise, double, failer, double)(2)
             
-      dodPromise.then( ((value) ->
+      sequencedPromise.then( ((value) ->
         success = value
         done()),
           ((reason) ->
