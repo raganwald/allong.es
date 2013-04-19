@@ -1,43 +1,43 @@
-{Supervisor, Supervisor: {sequence}} = require('../lib/allong.es.js').allong.es
+{Sequence} = require('../lib/allong.es.js').allong.es
 
 double = (n) -> n + n
 plusOne = (n) -> n + 1
   
-describe "sequence", ->
+describe "do", ->
 
   it "should be a thing", ->
-    expect( sequence ).not.toBeNull()
+    expect( Sequence.begin ).not.toBeNull()
     
   it "should return a function when given a function", ->
-    expect( sequence(double) ).not.toBeNull()
+    expect( Sequence.begin(double) ).not.toBeNull()
   
-  it "should sequence a single function", ->
-    expect( sequence(double)(3) ).toEqual 6
+  it "should do a single function", ->
+    expect( Sequence.begin(double)(3) ).toEqual 6
   
-  it "should sequence two functions", ->
-    expect( sequence(double, plusOne)(3) ).toEqual 7
+  it "should do two functions", ->
+    expect( Sequence.begin(double, plusOne)(3) ).toEqual 7
     
 describe "Identity", ->
   
-  it "should sequence a single function", ->
-    expect( sequence(Supervisor.Identity, double)(3) ).toEqual 6
+  it "should do a single function", ->
+    expect( Sequence.begin(Sequence.Identity, double)(3) ).toEqual 6
   
-  it "should sequence two functions", ->
-    expect( sequence(Supervisor.Identity, double, plusOne)(3) ).toEqual 7
+  it "should do two functions", ->
+    expect( Sequence.begin(Sequence.Identity, double, plusOne)(3) ).toEqual 7
     
 describe "Maybe", ->
   
   it "should pass numbers through", ->
-    expect( sequence(Supervisor.Maybe, double, plusOne)(3) ).toEqual 7
+    expect( Sequence.begin(Sequence.Maybe, double, plusOne)(3) ).toEqual 7
   
   it "should pass null through", ->
-    expect( sequence(Supervisor.Maybe, double, plusOne)(null) ).toBeNull()
+    expect( Sequence.begin(Sequence.Maybe, double, plusOne)(null) ).toBeNull()
   
   it "should pass undefined through", ->
-    expect( sequence(Supervisor.Maybe, double, plusOne)(undefined) ).toBeUndefined()
+    expect( Sequence.begin(Sequence.Maybe, double, plusOne)(undefined) ).toBeUndefined()
     
   it "should short-circuit", ->
-    expect( sequence(Supervisor.Maybe, double, ((x) ->), plusOne)(undefined) ).toBeUndefined()
+    expect( Sequence.begin(Sequence.Maybe, double, ((x) ->), plusOne)(undefined) ).toBeUndefined()
       
 describe "Writer", ->
   
@@ -60,7 +60,7 @@ describe "Writer", ->
     ]
   
   it "should accumulate writes", ->
-    expect( sequence(Supervisor.Writer, parity, space, size)(5) ).toEqual [5, 'odd small']
+    expect( Sequence.begin(Sequence.Writer, parity, space, size)(5) ).toEqual [5, 'odd small']
     
 describe 'List', ->
   
@@ -71,5 +71,5 @@ describe 'List', ->
     [n..1]
     
   it "should handle two levels of lists", ->
-    expect( sequence(Supervisor.List, oneToN, nToOne)(3) ).toEqual [1, 2, 1, 3, 2, 1]
+    expect( Sequence.begin(Sequence.List, oneToN, nToOne)(3) ).toEqual [1, 2, 1, 3, 2, 1]
       

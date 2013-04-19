@@ -1,7 +1,7 @@
 Promise = require 'promise'
-{Supervisor, Supervisor: {sequence}} = require('../lib/allong.es.js').allong.es
+{Sequence, Sequence: {do}} = require('../lib/allong.es.js').allong.es
 
-describe "sequence", ->
+describe "do", ->
     
   double = (value) ->
     new Promise (resolve, reject) ->
@@ -19,9 +19,9 @@ describe "sequence", ->
   
     it "should work asynchronously", (done) ->
       
-      sequencedPromise = sequence(Supervisor.Promise, double)(3)
+      dodPromise = do(Sequence.Promise, double)(3)
             
-      sequencedPromise.then ((value) ->
+      dodPromise.then ((value) ->
         success = value
         done()),
           ((reason) ->
@@ -36,9 +36,9 @@ describe "sequence", ->
   
     it "should work asynchronously", (done) ->
       
-      sequencedPromise = sequence(Supervisor.Promise, double, double)(2)
+      dodPromise = do(Sequence.Promise, double, double)(2)
             
-      sequencedPromise.then ((value) ->
+      dodPromise.then ((value) ->
         success = value
         done()),
           ((reason) ->
@@ -57,9 +57,9 @@ describe "sequence", ->
         new Promise (resolve, reject) ->
           reject 'sorry, old chap'
       
-      sequencedPromise = sequence(Supervisor.Promise, double, failer, double)(2)
+      dodPromise = do(Sequence.Promise, double, failer, double)(2)
             
-      sequencedPromise.then( ((value) ->
+      dodPromise.then( ((value) ->
         success = value
         done()),
           ((reason) ->
