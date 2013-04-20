@@ -85,23 +85,42 @@ describe "Sequence", ->
       expect( sequence(List, oneToN, nToOne)(3) ).toEqual [1, 2, 1, 3, 2, 1]
       
   describe "Callback", ->
-
-    double = (v, c) -> c(v * 2)
-    plus1 = (v, c) -> c(v + 1)
+    
     identity = (v) -> v
-  
-    it "should work for the null do", ->
     
-      expect( sequence(Callback)(42)(identity) ).toBe 42
+    describe "with one parameter", ->
+
+      double = (v, c) -> c(v * 2)
+      plus1 = (v, c) -> c(v + 1)
   
-    it "should work for a double", ->
+      it "should work for the null do", ->
     
-      expect( sequence(Callback, double)(42)(identity) ).toBe 84
+        expect( sequence(Callback)(42)(identity) ).toBe 42
   
-    it "should work for a double double", ->
+      it "should work for a double", ->
     
-      expect( sequence(Callback, double, double)(2)(identity) ).toBe 8
+        expect( sequence(Callback, double)(42)(identity) ).toBe 84
   
-    it "should work for a double plus1 double", ->
+      it "should work for a double double", ->
     
-      expect( sequence(Callback, double, plus1, double)(2)(identity) ).toBe 10
+        expect( sequence(Callback, double, double)(2)(identity) ).toBe 8
+  
+      it "should work for a double plus1 double", ->
+    
+        expect( sequence(Callback, double, plus1, double)(2)(identity) ).toBe 10
+        
+    describe "with multiple parameters", ->
+      
+      argsToArray = (args..., callback) ->
+        console.log("argsToArray", args)
+        callback(args)
+      
+      argsToArgs = (args..., callback) ->
+        console.log("argsToArgs", args)
+        callback(args...)
+      
+      it "should work for a singleton", ->
+        expect( sequence(Callback, argsToArgs, argsToArray)(1)(identity) ).toEqual [1]
+      
+      it "should work for a doubleton", ->
+        expect( sequence(Callback, argsToArgs, argsToArray)(1, 2)(identity) ).toEqual [1, 2]
