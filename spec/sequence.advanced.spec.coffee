@@ -112,11 +112,9 @@ describe "Sequence", ->
     describe "with multiple parameters", ->
       
       argsToArray = (args..., callback) ->
-        console.log("argsToArray", args)
         callback(args)
       
       argsToArgs = (args..., callback) ->
-        console.log("argsToArgs", args)
         callback(args...)
       
       it "should work for a singleton", ->
