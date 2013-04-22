@@ -1,4 +1,4 @@
-{sequence, Sequence: {Identity, Maybe, Writer, List, Then, Callback}} = require('../lib/allong.es.js').allong.es
+{sequence, Identity, Maybe, Writer, List, Then, Callback} = require('../lib/allong.es.js').allong.es
 
 describe "Sequence", ->
   
