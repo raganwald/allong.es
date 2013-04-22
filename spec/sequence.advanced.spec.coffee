@@ -88,6 +88,14 @@ describe "Sequence", ->
     
     identity = (v) -> v
     
+    describe "with just a callback", ->
+      
+      nothing = () ->
+      noop = (c) -> c(100)
+      
+      it "should pass values through", ->
+        expect( sequence(Callback, noop)(null)(identity) ).toBe 100
+      
     describe "with one parameter", ->
 
       double = (v, c) -> c(v * 2)
