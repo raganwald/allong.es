@@ -1,6 +1,8 @@
 Promise = require 'promise'
 
-{sequence, sequence: {Then}} = require('../lib/allong.es.js').allong.es
+{sequence} = require('../lib/allong.es.js').allong.es
+
+# also demonstrates string shorthand
 
 describe "Then", ->
     
@@ -20,7 +22,7 @@ describe "Then", ->
   
     it "should work asynchronously", (done) ->
       
-      sequencedPromise = sequence(Then, double)(3)
+      sequencedPromise = sequence('Then', double)(3)
             
       sequencedPromise.then ((value) ->
         success = value
@@ -37,7 +39,7 @@ describe "Then", ->
   
     it "should work asynchronously", (done) ->
       
-      sequencedPromise = sequence(Then, double, double)(2)
+      sequencedPromise = sequence('Then', double, double)(2)
             
       sequencedPromise.then ((value) ->
         success = value
@@ -58,7 +60,7 @@ describe "Then", ->
         new Promise (resolve, reject) ->
           reject 'sorry, old chap'
       
-      sequencedPromise = sequence(Then, double, failer, double)(2)
+      sequencedPromise = sequence('Then', double, failer, double)(2)
             
       sequencedPromise.then( ((value) ->
         success = value
