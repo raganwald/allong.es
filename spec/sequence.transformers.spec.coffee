@@ -1,6 +1,6 @@
 Promise = require 'promise'
 
-{sequence, Then, Callback, fn2Then, fn2Callback, callback2Then, then2Callback} = require('../lib/allong.es.js').allong.es
+{sequence, sequence: {Then, Callback, fn2Then, fn2Callback, callback2Then, then2Callback}} = require('../lib/allong.es.js').allong.es
 
 describe "fn2Then", ->
   
