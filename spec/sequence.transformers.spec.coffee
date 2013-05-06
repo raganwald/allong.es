@@ -93,7 +93,7 @@ describe "fn2Callback", ->
         double, 
         fn2Callback(plus1), 
         double
-      )(2)(identity) ).toBe 10
+      )(2, identity) ).toBe 10
 
 describe "then2Callback", ->
   
@@ -122,9 +122,9 @@ describe "then2Callback", ->
         double, 
         then2Callback(plus1), 
         double
-      )(2) (value) -> 
+      )(2, (value) -> 
         success = value
-        done()
+        done())
             
     afterEach ->    
       expect( success ).toEqual 10
