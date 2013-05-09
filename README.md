@@ -24,13 +24,13 @@ Their "special sauce" is that they automatically *curry* the supplied function, 
 call(greet)('Hello')('Tom')
   //=> 'Hello, Tom!'
   
-call(greet, 'Hello')('Tom'])
+call(greet, 'Hello')('Tom')
   //=> 'Hello, Tom!'
   
 apply(greet, [])('Hello')('Tom')
   //=> 'Hello, Tom!'
   
-apply(greet, ['Hello'])('Tom'])
+apply(greet, ['Hello'])('Tom')
   //=> 'Hello, Tom!'
 ```
 
